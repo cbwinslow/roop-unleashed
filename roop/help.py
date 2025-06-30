@@ -10,6 +10,11 @@ class InteractiveHelp:
         self.manager = MultiAgentManager()
 
     def run(self) -> None:
+        """
+        Starts an interactive command-line session for querying helper agents.
+        
+        Continuously prompts the user for input until "quit" or "exit" is entered, then sends the input to the agent manager for assistance and displays the response.
+        """
         print("Interactive help. Type 'quit' to exit.")
 
         while True:
