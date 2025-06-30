@@ -21,6 +21,7 @@ DEVNULL = -3
 
 FFMPEG_BINARY = "ffmpeg"
 
+
 class FFMPEG_VideoWriter:
     """ A class for FFMPEG-based video writing.
 
@@ -81,7 +82,6 @@ class FFMPEG_VideoWriter:
         self.ext = self.filename.split(".")[-1]
         w = size[0] - 1 if size[0] % 2 != 0 else size[0]
         h = size[1] - 1 if size[1] % 2 != 0 else size[1]
-
 
         # order is important
         cmd = [

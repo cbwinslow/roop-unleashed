@@ -2,7 +2,7 @@ import hashlib
 import os
 import urllib
 import warnings
-from typing import Any, Union, List
+from typing import Union, List
 from pkg_resources import packaging
 
 import torch
