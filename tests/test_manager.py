@@ -11,8 +11,3 @@ def test_assist_install():
     resp = mgr.assist('installer', 'how to install?')
     assert 'pip install' in resp
 
-
-def test_assist_model_recommendations():
-    mgr = MultiAgentManager()
-    resp = mgr.assist('model', 'recommend models')
-    assert 'Recommended models' in resp

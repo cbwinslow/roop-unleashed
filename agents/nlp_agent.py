@@ -8,9 +8,7 @@ class NLUModule:
     """Simple natural language understanding via regex rules."""
 
     patterns = {
-        r"install|setup|dependency|gpu": "installer",
-        r"model|weights|checkpoint": "model",
-        r"process|operation|run|help": "operation",
+
     }
 
     @classmethod

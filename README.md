@@ -26,7 +26,7 @@ Uncensored Deepfakes for images and videos without training and an easy-to-use G
 - Built-in multi-agent helper framework
 - Natural language assistant and lightweight MCP server
 - Interactive command-line help via `python -m roop.help`
-- Model agent lists recommended HuggingFace models
+
 
 and lots more...
 
