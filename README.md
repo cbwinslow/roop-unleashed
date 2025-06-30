@@ -18,6 +18,7 @@ Uncensored Deepfakes for images and videos without training and an easy-to-use G
 - Masking of face occluders using text prompts
 - Optional Face Restoration using different enhancers
 - Preview swapping from different video frames
+- Expanded GPU support (CUDA, ROCm, MPS and DirectML)
 - Live Fake Cam using your webcam
 - Extras Tab for cutting videos etc.
 - Settings - storing configuration for next session
@@ -56,7 +57,7 @@ Depending on your available GPU there are additional packages you need to instal
 
 [Using GPU Acceleration](https://github.com/s0md3v/roop/wiki/2.-Acceleration)
 
-The used GPU Provider is configured in the settings tab, no need to use cmdline arguments any more. Default is CUDA (for NVIDIA). If you change it, please restart roop-unleashed completely to allow for model reloading.
+The used GPU Provider is configured in the settings tab, so there is no need to use command line arguments. CUDA (for NVIDIA) is selected by default, but ROCm for AMD GPUs as well as Apple's MPS and Microsoft's DirectML are supported. After changing the provider please restart roop-unleashed so that models reload correctly. Available devices are listed at startup.
 
 For Video face-swapping you also need to have ffmpeg properly installed (having it in your PATH Env). The windows installer tries to do this automatically.  
 
