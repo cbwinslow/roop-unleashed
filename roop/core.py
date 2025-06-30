@@ -193,6 +193,24 @@ def update_status(message: str) -> None:
         call_display_ui(message)
 
 
+def log_available_gpus() -> None:
+    """Print detected GPU devices for better diagnostics."""
+    try:
+        if torch.cuda.is_available():
+            devices = [torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())]
+            update_status(f"CUDA devices detected: {', '.join(devices)}")
+        elif getattr(torch.backends, 'mps', None) and torch.backends.mps.is_available():
+            update_status('MPS device detected')
+        elif getattr(torch.version, 'hip', None) and torch.cuda.is_available():
+            update_status('ROCm device detected')
+        elif 'DmlExecutionProvider' in onnxruntime.get_available_providers():
+            update_status('DirectML device detected')
+        else:
+            update_status('Running on CPU')
+    except Exception as e:
+        update_status(f'GPU detection error: {e}')
+
+
 
 
 def start() -> None:
@@ -389,6 +407,7 @@ def destroy() -> None:
 
 def run() -> None:
     parse_args()
+    log_available_gpus()
     if not pre_check():
         return
     roop.globals.CFG = Settings('config.yaml')

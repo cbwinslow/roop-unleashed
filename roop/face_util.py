@@ -17,6 +17,7 @@ FACE_SWAPPER = None
 
 
 def get_face_analyser() -> Any:
+    """Initialise and cache the InsightFace analyser."""
     global FACE_ANALYSER
 
     with THREAD_LOCK_ANALYSER:
@@ -31,19 +32,22 @@ def get_face_analyser() -> Any:
 
 
 def get_first_face(frame: Frame) -> Any:
+    """Return the left-most detected face."""
     try:
         faces = get_face_analyser().get(frame)
         return min(faces, key=lambda x: x.bbox[0])
-    #   return sorted(faces, reverse=True, key=lambda x: (x.bbox[2] - x.bbox[0]) * (x.bbox[3] - x.bbox[1]))[0]
-    except:
+    except Exception as e:
+        print(f'Face detection failed: {e}')
         return None
 
 
 def get_all_faces(frame: Frame) -> Any:
+    """Return all detected faces sorted left to right."""
     try:
         faces = get_face_analyser().get(frame)
-        return sorted(faces, key = lambda x : x.bbox[0])
-    except:
+        return sorted(faces, key=lambda x: x.bbox[0])
+    except Exception as e:
+        print(f'Face detection failed: {e}')
         return None
 
 

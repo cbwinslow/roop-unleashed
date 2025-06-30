@@ -29,21 +29,27 @@ if platform.system().lower() == 'darwin':
 def run_ffmpeg(args: List[str]) -> bool:
     commands = ['ffmpeg', '-hide_banner', '-hwaccel', 'auto', '-y', '-loglevel', roop.globals.log_level]
     commands.extend(args)
-    print (" ".join(commands))
+    print(" ".join(commands))
     try:
         subprocess.check_output(commands, stderr=subprocess.STDOUT)
         return True
-    except Exception:
-        pass
+    except subprocess.CalledProcessError as e:
+        print(f'ffmpeg failed: {e.output.decode(errors="ignore")}')
+    except FileNotFoundError:
+        print('ffmpeg not found. Please ensure it is installed and on your PATH.')
+    except Exception as e:
+        print(f'Unexpected ffmpeg error: {e}')
     return False
 
 
 def detect_fps(target_path: str) -> float:
     command = ['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=r_frame_rate', '-of', 'default=noprint_wrappers=1:nokey=1', target_path]
-    output = subprocess.check_output(command).decode().strip().split('/')
     try:
+        output = subprocess.check_output(command, stderr=subprocess.STDOUT).decode().strip().split('/')
         numerator, denominator = map(int, output)
         return numerator / denominator
+    except subprocess.CalledProcessError as e:
+        print(f'ffprobe failed: {e.output.decode(errors="ignore")}')
     except Exception:
         pass
     return 24.0
@@ -62,7 +68,8 @@ def join_videos(videos: List[str], dest_filename: str):
         inputs.append('-i')
         inputs.append(v)
         filter += f'[{i}:v:0][{i}:a:0]'
-    run_ffmpeg([" ".join(inputs), '-filter_complex', f'"{filter}concat=n={len(videos)}:v=1:a=1[outv][outa]"', '-map', '"[outv]"', '-map', '"[outa]"', dest_filename])    
+    if not run_ffmpeg([" ".join(inputs), '-filter_complex', f'"{filter}concat=n={len(videos)}:v=1:a=1[outv][outa]"', '-map', '"[outv]"', '-map', '"[outa]"', dest_filename]):
+        print('Failed to join videos')
 
 def extract_frames(target_path: str) -> None:
     create_temp(target_path)
@@ -73,7 +80,8 @@ def extract_frames(target_path: str) -> None:
 
 def create_video(target_path: str, dest_filename: str, fps: float = 24.0) -> None:
     temp_directory_path = get_temp_directory_path(target_path)
-    run_ffmpeg(['-r', str(fps), '-i', os.path.join(temp_directory_path, f'%04d.{roop.globals.CFG.output_image_format}'), '-c:v', roop.globals.video_encoder, '-crf', str(roop.globals.video_quality), '-pix_fmt', 'yuv420p', '-vf', 'colorspace=bt709:iall=bt601-6-625:fast=1', '-y', dest_filename])
+    if not run_ffmpeg(['-r', str(fps), '-i', os.path.join(temp_directory_path, f'%04d.{roop.globals.CFG.output_image_format}'), '-c:v', roop.globals.video_encoder, '-crf', str(roop.globals.video_quality), '-pix_fmt', 'yuv420p', '-vf', 'colorspace=bt709:iall=bt601-6-625:fast=1', '-y', dest_filename]):
+        print('Failed to create video')
     return dest_filename
 
 
@@ -83,11 +91,13 @@ def create_gif_from_video(video_path: str, gif_path):
     fps = detect_fps(video_path)
     frame = get_video_frame(video_path)
 
-    run_ffmpeg(['-i', video_path, '-vf', f'fps={fps},scale={frame.shape[0]}:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse', '-loop', '0', gif_path])
+    if not run_ffmpeg(['-i', video_path, '-vf', f'fps={fps},scale={frame.shape[0]}:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse', '-loop', '0', gif_path]):
+        print('Failed to create GIF')
 
 
 def restore_audio(intermediate_video: str, original_video: str, final_video: str) -> None:
-    run_ffmpeg(['-i', intermediate_video, '-i', original_video, '-c:v', 'copy', '-map', '0:v:0', '-map', '1:a:0', '-y', final_video])
+    if not run_ffmpeg(['-i', intermediate_video, '-i', original_video, '-c:v', 'copy', '-map', '0:v:0', '-map', '1:a:0', '-y', final_video]):
+        print('Failed to restore audio')
 
 
 def get_temp_frame_paths(target_path: str) -> List[str]:
@@ -189,14 +199,19 @@ def resolve_relative_path(path: str) -> str:
     return os.path.abspath(os.path.join(os.path.dirname(__file__), path))
 
 def get_device() -> str:
+    """Return the best torch device based on selected execution provider."""
     if len(roop.globals.execution_providers) < 1:
         roop.globals.execution_providers = ['CPUExecutionProvider']
 
     prov = roop.globals.execution_providers[0]
-    if 'CUDAExecutionProvider' == prov:
+    if prov == 'CUDAExecutionProvider' and torch.cuda.is_available():
         return 'cuda'
-    if 'CoreMLExecutionProvider' == prov:
+    if prov == 'ROCMExecutionProvider' and torch.cuda.is_available():
+        return 'cuda'
+    if prov == 'CoreMLExecutionProvider' and getattr(torch.backends, 'mps', None) and torch.backends.mps.is_available():
         return 'mps'
+    if prov == 'DmlExecutionProvider' and torch.cuda.is_available():
+        return 'cuda'
     return 'cpu'
     
 
@@ -215,14 +230,17 @@ def open_with_default_app(filename):
     if filename == None:
         return
     platform = get_platform()
-    if platform == 'darwin':
-        subprocess.call(('open', filename))
-    elif platform in ['win64', 'win32']:
-        os.startfile(filename.replace('/','\\'))
-    elif platform == 'wsl':
-        subprocess.call('cmd.exe /C start'.split() + [filename])
-    else:                                   # linux variants
-        subprocess.call('xdg-open', filename)
+    try:
+        if platform == 'darwin':
+            subprocess.call(('open', filename))
+        elif platform in ['win64', 'win32']:
+            os.startfile(filename.replace('/','\\'))
+        elif platform == 'wsl':
+            subprocess.call('cmd.exe /C start'.split() + [filename])
+        else:                                   # linux variants
+            subprocess.call('xdg-open', filename)
+    except Exception as e:
+        print(f'Failed to open {filename}: {e}')
 
 def prepare_for_batch(target_files):
     print("Preparing temp files")
