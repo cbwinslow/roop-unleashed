@@ -1,8 +1,7 @@
-from typing import Any, List, Callable
-from roop.typing import Frame
+from typing import Any
 import psutil
 import os
-from concurrent.futures import ThreadPoolExecutor, as_completed, wait, FIRST_COMPLETED
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import Thread, Lock
 from queue import Queue, PriorityQueue
 from .image import ChainImgProcessor

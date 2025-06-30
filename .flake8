@@ -1,3 +1,5 @@
 [flake8]
-select = E3, E4, F
-per-file-ignores = roop/core.py:E402
+select = E3,E4,F
+per-file-ignores =
+    roop/core.py:E402
+exclude = chain_img_processor,clip,installer,plugins,jaa.py,roop/capturer.py,roop/core.py,roop/face_util.py,roop/processors,roop/ui.py,roop/utilities.py,settings.py

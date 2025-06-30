@@ -8,6 +8,7 @@ from tqdm import tqdm
 import cv2
 import roop.globals
 
+
 def create_queue(temp_frame_paths: List[str]) -> Queue[str]:
     queue: Queue[str] = Queue()
     for frame_path in temp_frame_paths:
@@ -21,7 +22,6 @@ def pick_queue(queue: Queue[str], queue_per_future: int) -> List[str]:
         if not queue.empty():
             queues.append(queue.get())
     return queues
-
 
 
 class ChainBatchImageProcessor(ChainImgProcessor):
@@ -69,7 +69,6 @@ class ChainBatchImageProcessor(ChainImgProcessor):
                     cv2.imwrite(target_files[i], resimg)
             if update:
                 update()
-
 
     def run_batch_chain(self, source_files, target_files, threads:int = 1, chain = None, params_frame_gen_func = None):
         self.chain = chain

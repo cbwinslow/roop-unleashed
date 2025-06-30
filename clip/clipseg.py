@@ -3,7 +3,6 @@ from os.path import basename, dirname, join, isfile
 import torch
 from torch import nn
 from torch.nn import functional as nnf
-from torch.nn.modules.activation import ReLU
 
 
 def get_prompt_list(prompt):
