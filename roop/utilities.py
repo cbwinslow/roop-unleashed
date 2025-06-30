@@ -257,13 +257,17 @@ def open_folder(path:str):
 
 def create_version_html():
     python_version = ".".join([str(x) for x in sys.version_info[0:3]])
-    versions_html = f"""
-python: <span title="{sys.version}">{python_version}</span>
-•
-torch: {getattr(torch, '__long_version__',torch.__version__)}
-•
-gradio: {gradio.__version__}
-"""
+    import torchvision
+    cuda_version = getattr(torch.version, "cuda", "cpu")
+    cudnn_version = torch.backends.cudnn.version()
+    versions_html = (
+        f"python: <span title=\"{sys.version}\">{python_version}</span>"
+        f" • torch: {getattr(torch, '__long_version__', torch.__version__)}"
+        f" • torchvision: {torchvision.__version__}"
+        f" • cuda: {cuda_version}"
+        f" • cudnn: {cudnn_version}"
+        f" • gradio: {gradio.__version__}"
+    )
     return versions_html
 
 
