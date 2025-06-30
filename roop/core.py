@@ -157,7 +157,7 @@ def release_resources() -> None:
 
 def pre_check() -> bool:
     if sys.version_info < (3, 9):
-        update_status('Python version is not supported - please upgrade to 3.9 or higher.')
+        update_status('Python version is not supported - please use Python 3.9 or newer.')
         return False
     
     download_directory_path = util.resolve_relative_path('../models')

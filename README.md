@@ -41,7 +41,11 @@ In the event of violation of the legal and ethical requirements of the user's co
 Besides that, just use the 1-click installer in releases. This will download and install everything
 in a handy conda environment. This not only installs the application but also runs it, once installed.
 
-For other OS or if you know what you're doing:
+For Linux a new one click installer is provided:
+
+- run `installer/linux_run.sh` (it will install Miniconda, create an environment and launch the app)
+
+If you prefer manual setup or use another OS:
 
 - `git clone https://github.com/C0untFloyd/roop-unleashed`
 - preferably create a venv or conda environment
@@ -61,7 +65,7 @@ For Video face-swapping you also need to have ffmpeg properly installed (having 
 ### Usage
 
 - Windows: run the `windows_run.bat` from the Installer.
-- Linux: `python run.py`
+- Linux: run `installer/linux_run.sh`
 
 <a target="_blank" href="https://colab.research.google.com/github/C0untFloyd/roop-unleashed/blob/main/roop-unleashed.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
@@ -71,6 +75,14 @@ For Video face-swapping you also need to have ffmpeg properly installed (having 
 Additional commandline arguments are currently unsupported and settings should be done via the UI.
 
 > Note: When you run this program for the first time, it will download some models roughly ~2Gb in size.
+
+### Supported Versions
+
+- **Python:** 3.9 – 3.12
+- **PyTorch:** 2.0 – 2.2
+- **TorchVision:** 0.15 – 0.16
+- **CUDA:** 11.8 or 12.1
+- **cuDNN:** 8 or newer
 
 
 ### Example
