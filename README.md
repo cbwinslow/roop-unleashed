@@ -27,6 +27,7 @@ Uncensored Deepfakes for images and videos without training and an easy-to-use G
 - Natural language assistant and lightweight MCP server
 - Interactive command-line help via `python -m roop.help`
 
+
 and lots more...
 
 

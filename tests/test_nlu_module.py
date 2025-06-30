@@ -11,3 +11,4 @@ def test_parse_model_default():
     agent, payload = NLUModule.parse('which model should I use?')
     assert agent == 'model'
     assert 'which should i use?' == payload.lower()
+

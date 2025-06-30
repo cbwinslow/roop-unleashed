@@ -11,11 +11,12 @@ class InteractiveHelp:
 
     def run(self) -> None:
         print("Interactive help. Type 'quit' to exit.")
+
         while True:
             query = input('> ')
             if query.lower() in {"quit", "exit"}:
                 break
-            agent, _, text = query.partition(':')
+
             response = self.manager.assist(agent.strip(), text.strip())
             print(response)
 

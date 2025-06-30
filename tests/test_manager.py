@@ -10,3 +10,4 @@ def test_assist_install():
     mgr = MultiAgentManager()
     resp = mgr.assist('installer', 'how to install?')
     assert 'pip install' in resp
+
