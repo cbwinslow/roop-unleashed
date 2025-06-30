@@ -3,6 +3,7 @@
 import os
 import sys
 import shutil
+import logging
 # single thread doubles cuda performance - needs to be set before torch import
 if any(arg.startswith('--execution-provider') for arg in sys.argv):
     os.environ['OMP_NUM_THREADS'] = '1'
@@ -18,6 +19,8 @@ import onnxruntime
 
 from time import time
 
+from roop.logger import setup_logger
+
 import roop.globals
 import roop.metadata
 import roop.utilities as util
@@ -25,6 +28,8 @@ import roop.ui as ui
 from settings import Settings
 from roop.face_util import extract_face_images
 from chain_img_processor import ChainImgProcessor, ChainVideoProcessor, ChainBatchImageProcessor, ChainVideoImageProcessor
+
+logger = setup_logger(roop.globals.log_level)
 
 clip_text = None
 
@@ -187,7 +192,7 @@ def set_display_ui(function):
 
 def update_status(message: str) -> None:
     global call_display_ui
-
+    logger.info(message)
     print(message)
     if call_display_ui is not None:
         call_display_ui(message)

@@ -3,3 +3,15 @@ from .video_old import ChainVideoProcessor, get_single_video_processor
 from .video import ChainVideoImageProcessor
 from .batchimage import ChainBatchImageProcessor
 from .ffmpeg_writer import FFMPEG_VideoWriter
+
+__all__ = [
+    'ChainImgProcessor',
+    'ChainImgPlugin',
+    'get_single_image_processor',
+    'version',
+    'ChainVideoProcessor',
+    'get_single_video_processor',
+    'ChainVideoImageProcessor',
+    'ChainBatchImageProcessor',
+    'FFMPEG_VideoWriter',
+]

@@ -23,6 +23,10 @@ Uncensored Deepfakes for images and videos without training and an easy-to-use G
 - Extras Tab for cutting videos etc.
 - Settings - storing configuration for next session
 - Theme Support
+- Built-in multi-agent helper framework
+- Natural language assistant and lightweight MCP server
+- Interactive command-line help via `python -m roop.help`
+- Model agent lists recommended HuggingFace models
 
 and lots more...
 

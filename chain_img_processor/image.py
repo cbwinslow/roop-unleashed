@@ -6,6 +6,7 @@ from typing import Any
 
 version = "4.0.0"
 
+
 class ChainImgProcessor(JaaCore):
 
     def __init__(self):
@@ -112,8 +113,9 @@ class ChainImgProcessor(JaaCore):
         obj = self.processors[processor_id](self)
         obj.init_plugin()
         if self.processors_objects.get(processor_id) is None:
-            self.processors_objects[processor_id] = []
+        self.processors_objects[processor_id] = []
         self.processors_objects[processor_id].append(obj)
+
     def init_processor(self, processor_id: str):
         if processor_id == "": # blank line case
             return
@@ -154,6 +156,7 @@ class ChainImgProcessor(JaaCore):
     def print_blue(self, txt):
         print(txt)
 
+
 class ChainImgPlugin:
 
     device = 'cpu'
@@ -188,10 +191,8 @@ class ChainImgPlugin:
             frame[start_y:end_y, start_x:end_x] = clip
         return frame
 
-    
+_img_processor: ChainImgProcessor = None
 
-
-_img_processor:ChainImgProcessor = None
 def get_single_image_processor() -> ChainImgProcessor:
     global _img_processor
     if _img_processor is None:
