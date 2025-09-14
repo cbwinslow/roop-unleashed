@@ -1,0 +1,120 @@
+# Git and version control
+.git
+.gitignore
+.gitattributes
+
+# Python cache and temporary files
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache
+.mypy_cache
+.ruff_cache
+
+# Virtual environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Documentation
+docs/
+*.md
+LICENSE
+CHANGELOG*
+README*
+
+# Development and testing
+tests/
+test_*.py
+*_test.py
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+.nox/
+.tox/
+
+# Notebooks and temporary files
+*.ipynb
+notebooks/
+.ipynb_checkpoints/
+
+# Output and temporary directories
+output/
+temp/
+tmp/
+logs/
+*.log
+profiling/
+
+# Models and large files (should be mounted as volumes)
+models/
+*.onnx
+*.pth
+*.bin
+*.safetensors
+
+# Docker files (avoid recursive copying)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+Jenkinsfile
+
+# Package management
+*.egg-info/
+dist/
+build/
+
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+secrets.txt
+*.key
+*.pem
+
+# Monitoring and profiling
+monitoring/
+grafana/
+prometheus/
+
+# ComfyUI specific (if present)
+ComfyUI/
+comfyui/
+workflows/
+custom_nodes/
+
+# Local configuration overrides
+config_local.yaml
+settings_local.py
+local_config.json

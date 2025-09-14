@@ -41,6 +41,32 @@ In the event of violation of the legal and ethical requirements of the user's co
 
 ### Installation
 
+#### 🐳 Docker Installation (Recommended)
+
+The easiest way to run roop-unleashed with all the latest optimizations:
+
+```bash
+# Quick start with auto-detection
+./docker-start.sh
+
+# Or manually choose your setup:
+# NVIDIA GPU
+docker-compose up -d roop-unleashed
+
+# AMD GPU  
+docker-compose --profile rocm up -d roop-rocm
+
+# CPU only
+docker-compose --profile cpu up -d roop-cpu
+
+# Development environment
+docker-compose --profile dev up -d roop-dev
+```
+
+See [DOCKER.md](DOCKER.md) for comprehensive Docker setup instructions.
+
+#### 📦 Manual Installation
+
 > For Windows, you need to download and install [Visual Studio](https://visualstudio.microsoft.com/de/downloads/) (in theory build-tools might work too but in my experience so far they don't). During the install, make sure to include the C++ package.
 
 Besides that, just use the 1-click installer in releases. This will download and install everything
@@ -83,10 +109,18 @@ Additional commandline arguments are currently unsupported and settings should b
 
 ### Supported Versions
 
+**With Docker (Recommended):**
+- **CUDA:** 12.4 (latest drivers)
+- **PyTorch:** 2.4.0 (latest stable)
+- **TensorRT:** 10.0+ (optional optimization)
+- **ROCm:** 5.7 (for AMD GPUs)
+- **Python:** 3.11 (in container)
+
+**Manual Installation:**
 - **Python:** 3.9 – 3.12
-- **PyTorch:** 2.0 – 2.2
-- **TorchVision:** 0.15 – 0.16
-- **CUDA:** 11.8 or 12.1
+- **PyTorch:** 2.0 – 2.4
+- **TorchVision:** 0.15 – 0.19
+- **CUDA:** 11.8, 12.1, or 12.4
 - **cuDNN:** 8 or newer
 
 
