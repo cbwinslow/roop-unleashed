@@ -12,3 +12,23 @@ temp
 config.yaml
 run.bat
 venv
+
+# CI/Test artifacts
+*.log
+.coverage
+htmlcov/
+test-results.xml
+*.json
+test-assets/
+test-outputs/
+benchmark-results.json
+memory-profile.txt
+bandit-report.json
+quality-metrics.json
+model-availability.json
+metrics.json
+alerts.json
+optimization-results.json
+performance-charts/
+coverage-summary.json
+test-report.html
