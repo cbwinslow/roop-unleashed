@@ -113,8 +113,10 @@ RUN pip install --no-cache-dir --upgrade pip wheel setuptools && \
 COPY . .
 
 # Create necessary directories with proper permissions
-RUN mkdir -p /app/models /app/temp /app/logs /app/output /app/rag_vectors /app/knowledge && \
-    chown -R roop:roop /app
+RUN mkdir -p /app/models /app/temp /app/logs /app/output /app/rag_vectors /app/knowledge /tmp/matplotlib && \
+    chown -R roop:roop /app && \
+    chmod -R 755 /app/models /app/temp /app/logs /app/output && \
+    chmod 777 /tmp/matplotlib
 
 # Create model download script
 COPY scripts/download_models.py /app/download_models.py
@@ -141,4 +143,4 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Default command
-CMD ["python3", "run.py", "--server-name", "0.0.0.0", "--server-port", "7860"]
+CMD ["python3", "run.py"]

@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-# Download models if they don't exist
-python3 /app/download_models.py
+# Create models directory
+mkdir -p /app/models
 
 # Set up CPU-optimized environment
 export ROOP_EXECUTION_PROVIDER=cpu

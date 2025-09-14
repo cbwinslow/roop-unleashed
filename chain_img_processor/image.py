@@ -113,7 +113,7 @@ class ChainImgProcessor(JaaCore):
         obj = self.processors[processor_id](self)
         obj.init_plugin()
         if self.processors_objects.get(processor_id) is None:
-        self.processors_objects[processor_id] = []
+            self.processors_objects[processor_id] = []
         self.processors_objects[processor_id].append(obj)
 
     def init_processor(self, processor_id: str):

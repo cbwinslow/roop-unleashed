@@ -108,7 +108,7 @@ def run():
                         with gr.Row():
                                 bt_remove_selected_input_face = gr.Button("Remove selected")
                                 bt_clear_input_faces = gr.Button("Clear all", variant='stop')
-                        bt_srcimg = gr.Image(label='Source Face Image', type='filepath', tool=None)
+                        bt_srcimg = gr.Image(label='Source Face Image', type='filepath')
                     with gr.Column():
                         target_faces = gr.Gallery(label="Target faces", allow_preview=True, preview=True, height=128, object_fit="scale-down")
                         with gr.Row():
@@ -147,7 +147,7 @@ def run():
                             with gr.Column(scale=1):
                                 bt_preview_mask = gr.Button("Show Mask Preview", variant='secondary')
                             with gr.Column(scale=2):
-                                maskpreview = gr.Image(label="Preview Mask", shape=(None,512), interactive=False)
+                                maskpreview = gr.Image(label="Preview Mask", interactive=False)
                             
                 with gr.Row(variant='panel'):
                     with gr.Column():

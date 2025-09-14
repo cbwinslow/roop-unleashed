@@ -5,7 +5,7 @@ import hashlib
 
 models = {
     "inswapper_128.onnx": {
-        "url": "https://github.com/facefusion/facefusion-assets/releases/download/models/inswapper_128.onnx",
+        "url": "https://huggingface.co/deepinsight/inswapper/resolve/main/inswapper_128.onnx",
         "hash": "e4a3f08c753cb72d04e10aa0f7dbe3deebbf39567d4ead6dce08e98aa49e16af"
     }
 }
