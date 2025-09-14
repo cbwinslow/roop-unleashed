@@ -26,6 +26,7 @@ Uncensored Deepfakes for images and videos without training and an easy-to-use G
 - Built-in multi-agent helper framework
 - Natural language assistant and lightweight MCP server
 - Interactive command-line help via `python -m roop.help`
+- **🤖 AI Assistant Chat Interface** - Intelligent help with face swapping, optimization, and troubleshooting
 
 
 and lots more...

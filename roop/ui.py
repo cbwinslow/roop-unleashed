@@ -407,6 +407,18 @@ def run():
                         button_clean_temp = gr.Button("Clean temp folder")
                         button_apply_settings = gr.Button("Apply Settings")
 
+            # AI Assistant Chat Tab
+            with gr.Tab("🤖 AI Assistant"):
+                try:
+                    from roop.ai_chat_interface import create_chat_interface
+                    chat_interface = create_chat_interface(roop.globals.CFG if hasattr(roop.globals, 'CFG') else None)
+                except ImportError as e:
+                    gr.Markdown(f"**AI Chat Interface not available:** {e}")
+                    gr.Markdown("The AI assistant requires additional setup. Please check the installation.")
+                except Exception as e:
+                    gr.Markdown(f"**Error loading AI Chat:** {e}")
+                    gr.Markdown("Please check the logs for more details.")
+
             previewinputs = [preview_frame_num, bt_destfiles, fake_preview, selected_enhancer, selected_face_detection,
                                 max_face_distance, blend_ratio, chk_useclip, clip_text] 
             input_faces.select(on_select_input_face, None, None).then(fn=on_preview_frame_changed, inputs=previewinputs, outputs=[previewimage])
