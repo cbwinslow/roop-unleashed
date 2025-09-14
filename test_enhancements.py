@@ -11,6 +11,29 @@ import numpy as np
 # Add the project root to the path
 sys.path.insert(0, '/home/runner/work/roop-unleashed/roop-unleashed')
 
+# Mock insightface module globally before any imports
+import types
+mock_insightface = types.ModuleType('insightface')
+
+# Create mock classes and functions
+from roop.mock_insightface import Face, app
+mock_insightface.Face = Face
+mock_insightface.app = app
+
+# Mock model_zoo for enhanced_face_swapper
+mock_model_zoo = types.ModuleType('model_zoo')
+mock_model_zoo.get_model = lambda path, providers: type('MockModel', (), {
+    'get': lambda self, frame, target_face, source_face, paste_back=True: frame
+})()
+mock_insightface.model_zoo = mock_model_zoo
+
+# Add to sys.modules to ensure imports work
+sys.modules['insightface'] = mock_insightface
+sys.modules['insightface.app'] = mock_insightface.app
+sys.modules['insightface.app.common'] = types.ModuleType('common')
+sys.modules['insightface.app.common'].Face = Face
+sys.modules['insightface.model_zoo'] = mock_model_zoo
+
 def test_basic_imports():
     """Test basic module imports."""
     print("=== Testing Basic Imports ===")

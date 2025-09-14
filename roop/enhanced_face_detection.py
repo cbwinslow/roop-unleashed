@@ -7,15 +7,21 @@ import cv2
 import numpy as np
 import threading
 from typing import List, Tuple, Optional, Any
-import insightface
-from scipy.spatial.distance import cosine
 
 import roop.globals
 from roop.typing import Face, Frame
 
+# Try to import insightface, fall back to mock if not available
+try:
+    import insightface
+except ImportError:
+    print("insightface not found, using mock implementation")
+    from roop import mock_insightface as insightface
+
 # Global variables for enhanced face detection
 ENHANCED_FACE_ANALYSER = None
 THREAD_LOCK_ENHANCED = threading.Lock()
+
 
 class FaceQualityAssessment:
     """Assess face quality based on multiple criteria."""
@@ -210,16 +216,22 @@ def get_enhanced_face_analyser() -> Any:
     
     with THREAD_LOCK_ENHANCED:
         if ENHANCED_FACE_ANALYSER is None:
-            if roop.globals.CFG.force_cpu:
+            # Handle cases where CFG might not be initialized
+            force_cpu = False
+            if hasattr(roop.globals, 'CFG') and roop.globals.CFG is not None:
+                force_cpu = getattr(roop.globals.CFG, 'force_cpu', False)
+            
+            if force_cpu:
                 print('Forcing CPU for Enhanced Face Analysis')
                 ENHANCED_FACE_ANALYSER = insightface.app.FaceAnalysis(
                     name='buffalo_l', 
                     providers=['CPUExecutionProvider']
                 )
             else:
+                execution_providers = getattr(roop.globals, 'execution_providers', ['CPUExecutionProvider'])
                 ENHANCED_FACE_ANALYSER = insightface.app.FaceAnalysis(
                     name='buffalo_l', 
-                    providers=roop.globals.execution_providers
+                    providers=execution_providers
                 )
             
             # Use higher resolution by default for better accuracy

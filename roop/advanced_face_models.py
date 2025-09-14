@@ -5,13 +5,11 @@ Provides framework for integrating state-of-the-art face generation and enhancem
 
 import cv2
 import numpy as np
-from typing import Dict, List, Optional, Tuple, Any, Union
+from typing import Dict, List, Optional, Tuple, Any
 import logging
 from abc import ABC, abstractmethod
-from pathlib import Path
 
-from roop.typing import Frame, Face
-from roop.utilities import conditional_download, resolve_relative_path
+from roop.typing import Face
 
 logger = logging.getLogger(__name__)
 

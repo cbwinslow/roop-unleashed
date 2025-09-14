@@ -10,12 +10,7 @@ import logging
 import gc
 
 from roop.typing import Frame, Face
-from roop.enhanced_config import get_enhanced_config, EnhancedProcessingConfig
-from roop.inpainting import get_inpainting_manager
-from roop.temporal_consistency import get_temporal_manager
-from roop.advanced_face_models import get_face_model_manager
-from roop.video_frame_interpolation import get_frame_rate_enhancer
-from roop.enhanced_face_profiler import get_enhanced_face_profiler
+
 from roop.enhanced_face_detection import get_enhanced_faces
 from roop.advanced_blending import AdvancedBlender, get_available_blend_methods
 
