@@ -183,6 +183,154 @@ def run():
                             fake_cam_image = gr.Image(label='Fake Camera Output', interactive=False)
 
 
+            with gr.Tab("Advanced"):
+                with gr.Row():
+                    gr.Markdown("### Advanced Face Processing Features")
+                
+                with gr.Row():
+                    with gr.Accordion(label="Inpainting & Face Correction", open=False):
+                        with gr.Row():
+                            with gr.Column():
+                                inpainting_method = gr.Dropdown(
+                                    ["Traditional (Telea)", "Traditional (Navier-Stokes)", "Stable Diffusion"], 
+                                    value="Traditional (Telea)", 
+                                    label="Inpainting Method"
+                                )
+                                enable_boundary_enhancement = gr.Checkbox(
+                                    label="Enhance Face Boundaries", value=True
+                                )
+                                boundary_blend_strength = gr.Slider(
+                                    0.0, 1.0, value=0.7, 
+                                    label="Boundary Enhancement Strength"
+                                )
+                            with gr.Column():
+                                mask_expansion_ratio = gr.Slider(
+                                    0.0, 0.5, value=0.1, 
+                                    label="Face Mask Expansion Ratio"
+                                )
+                                inpaint_radius = gr.Slider(
+                                    1, 10, value=3, 
+                                    label="Inpainting Radius", step=1
+                                )
+                                enable_occlusion_detection = gr.Checkbox(
+                                    label="Auto-detect Occlusions", value=False
+                                )
+                            with gr.Column():
+                                inpaint_prompt = gr.Textbox(
+                                    label="SD Inpainting Prompt (when using Stable Diffusion)",
+                                    placeholder="natural face, high quality, photorealistic",
+                                    value="natural face, high quality"
+                                )
+                                bt_test_inpainting = gr.Button("Test Inpainting", variant='secondary')
+                                inpaint_preview = gr.Image(label="Inpainting Preview", interactive=False)
+                
+                with gr.Row():
+                    with gr.Accordion(label="Temporal Consistency (Video)", open=False):
+                        with gr.Row():
+                            with gr.Column():
+                                enable_temporal_consistency = gr.Checkbox(
+                                    label="Enable Temporal Consistency", value=True
+                                )
+                                temporal_smoothing_factor = gr.Slider(
+                                    0.0, 1.0, value=0.3,
+                                    label="Temporal Smoothing Factor"
+                                )
+                                enable_optical_flow = gr.Checkbox(
+                                    label="Use Optical Flow Tracking", value=True
+                                )
+                            with gr.Column():
+                                enable_position_stabilization = gr.Checkbox(
+                                    label="Stabilize Face Positions", value=True
+                                )
+                                enable_landmark_stabilization = gr.Checkbox(
+                                    label="Stabilize Facial Landmarks", value=True
+                                )
+                                quality_filter_threshold = gr.Slider(
+                                    0.0, 1.0, value=0.5,
+                                    label="Quality Filter Threshold"
+                                )
+                            with gr.Column():
+                                temporal_buffer_size = gr.Slider(
+                                    1, 10, value=5, step=1,
+                                    label="Temporal Buffer Size"
+                                )
+                                bt_reset_temporal = gr.Button("Reset Temporal State", variant='secondary')
+                                temporal_info = gr.Textbox(
+                                    label="Temporal Processing Info", 
+                                    interactive=False, lines=3
+                                )
+                
+                with gr.Row():
+                    with gr.Accordion(label="Advanced Face Models", open=False):
+                        with gr.Row():
+                            with gr.Column():
+                                face_enhancement_model = gr.Dropdown(
+                                    ["None", "WAN Enhancement", "Traditional Enhancement"], 
+                                    value="None", 
+                                    label="Face Enhancement Model"
+                                )
+                                face_enhancement_level = gr.Slider(
+                                    0.0, 1.0, value=0.5,
+                                    label="Enhancement Level"
+                                )
+                                enable_quality_analysis = gr.Checkbox(
+                                    label="Enable Quality Analysis", value=True
+                                )
+                            with gr.Column():
+                                quality_enhancement_threshold = gr.Slider(
+                                    0.0, 1.0, value=0.3,
+                                    label="Quality Enhancement Threshold"
+                                )
+                                enable_best_face_selection = gr.Checkbox(
+                                    label="Auto-select Best Quality Face", value=False
+                                )
+                                bt_analyze_face_quality = gr.Button("Analyze Face Quality", variant='secondary')
+                            with gr.Column():
+                                face_quality_metrics = gr.JSON(
+                                    label="Face Quality Metrics", value={}
+                                )
+                                model_enhancement_info = gr.Textbox(
+                                    label="Enhancement Info", 
+                                    interactive=False, lines=3
+                                )
+                
+                with gr.Row():
+                    with gr.Accordion(label="Batch Processing Optimization", open=False):
+                        with gr.Row():
+                            with gr.Column():
+                                enable_memory_optimization = gr.Checkbox(
+                                    label="Enable Memory Optimization", value=True
+                                )
+                                adaptive_quality_settings = gr.Checkbox(
+                                    label="Adaptive Quality Based on System", value=True
+                                )
+                                parallel_face_processing = gr.Checkbox(
+                                    label="Parallel Face Processing", value=False
+                                )
+                            with gr.Column():
+                                batch_size_limit = gr.Slider(
+                                    1, 100, value=10, step=1,
+                                    label="Max Batch Size"
+                                )
+                                memory_usage_limit = gr.Slider(
+                                    1, 32, value=8, step=1,
+                                    label="Memory Usage Limit (GB)"
+                                )
+                                processing_priority = gr.Dropdown(
+                                    ["Quality", "Speed", "Balanced"], 
+                                    value="Balanced",
+                                    label="Processing Priority"
+                                )
+                            with gr.Column():
+                                system_info = gr.Textbox(
+                                    label="System Information", 
+                                    interactive=False, lines=4
+                                )
+                                optimization_status = gr.Textbox(
+                                    label="Optimization Status", 
+                                    interactive=False, lines=2
+                                )
+            
             with gr.Tab("Extras"):
                 with gr.Row():
                     files_to_process = gr.Files(label='File(s) to process', file_count="multiple")
@@ -310,6 +458,23 @@ def run():
             # start_join_videos.click(fn=on_join_videos, inputs=[files_to_process], outputs=[extra_files_output])
             start_extract_frames.click(fn=on_extract_frames, inputs=[files_to_process], outputs=[extra_files_output])
             start_create_gif.click(fn=on_create_gif, inputs=[files_to_process], outputs=[extra_files_output])
+
+            # Advanced features callbacks
+            bt_test_inpainting.click(
+                fn=on_test_inpainting, 
+                inputs=[preview_frame_num, bt_destfiles, inpainting_method, mask_expansion_ratio, inpaint_radius, inpaint_prompt], 
+                outputs=[inpaint_preview]
+            )
+            bt_reset_temporal.click(fn=on_reset_temporal, outputs=[temporal_info])
+            bt_analyze_face_quality.click(
+                fn=on_analyze_face_quality, 
+                inputs=[preview_frame_num, bt_destfiles], 
+                outputs=[face_quality_metrics, model_enhancement_info]
+            )
+            
+            # Update system info periodically
+            ui.load(fn=get_system_info, outputs=[system_info])
+            ui.load(fn=lambda: "Ready for optimization", outputs=[optimization_status])
 
             # Settings
             for s in settings_controls:
@@ -785,6 +950,161 @@ def clean_temp():
     gr.Info('Temp Files removed')
     return None,None,None,None
 
+
+# Advanced feature callbacks
+def on_test_inpainting(frame_num, files, method, expansion_ratio, radius, prompt):
+    """Test inpainting on current preview frame."""
+    try:
+        from roop.inpainting import get_inpainting_manager, InpaintingMaskGenerator
+        
+        if files is None or len(files) == 0:
+            gr.Warning("Please select a target file first")
+            return None
+        
+        filename = files[0].name
+        if util.is_video(filename):
+            frame = get_video_frame(filename, frame_num)
+        else:
+            frame = get_image_frame(filename)
+        
+        if frame is None:
+            gr.Warning("Could not load frame")
+            return None
+        
+        # Create a dummy face region for testing (center of image)
+        h, w = frame.shape[:2]
+        center_x, center_y = w // 2, h // 2
+        size = min(w, h) // 4
+        
+        # Create mock face object
+        class MockFace:
+            def __init__(self, bbox):
+                self.bbox = bbox
+        
+        face = MockFace([center_x - size, center_y - size, center_x + size, center_y + size])
+        
+        # Generate mask
+        mask = InpaintingMaskGenerator.create_face_boundary_mask(
+            face, frame.shape, expansion_ratio
+        )
+        
+        # Get inpainting manager and process
+        manager = get_inpainting_manager()
+        method_map = {
+            "Traditional (Telea)": "traditional_telea",
+            "Traditional (Navier-Stokes)": "traditional_ns",
+            "Stable Diffusion": "stable_diffusion"
+        }
+        
+        inpainted_frame, _ = manager.inpaint_face_region(
+            frame, face, method_map.get(method, "traditional_telea"),
+            mask_type='boundary', inpaint_radius=radius, prompt=prompt
+        )
+        
+        return convert_to_gradio(inpainted_frame)
+        
+    except Exception as e:
+        gr.Error(f"Inpainting test failed: {str(e)}")
+        return None
+
+def on_reset_temporal():
+    """Reset temporal consistency state."""
+    try:
+        from roop.temporal_consistency import reset_temporal_state
+        reset_temporal_state()
+        gr.Info("Temporal state reset successfully")
+        return "Temporal state has been reset"
+    except Exception as e:
+        gr.Error(f"Failed to reset temporal state: {str(e)}")
+        return f"Error: {str(e)}"
+
+def on_analyze_face_quality(frame_num, files):
+    """Analyze face quality in current frame."""
+    try:
+        from roop.advanced_face_models import analyze_face_quality
+        from roop.enhanced_face_detection import get_enhanced_faces
+        
+        if files is None or len(files) == 0:
+            gr.Warning("Please select a target file first")
+            return {}, "No file selected"
+        
+        filename = files[0].name
+        if util.is_video(filename):
+            frame = get_video_frame(filename, frame_num)
+        else:
+            frame = get_image_frame(filename)
+        
+        if frame is None:
+            gr.Warning("Could not load frame")
+            return {}, "Could not load frame"
+        
+        # Detect faces
+        faces = get_enhanced_faces(frame)
+        
+        if not faces:
+            return {}, "No faces detected in frame"
+        
+        # Analyze first face
+        face = faces[0]
+        if hasattr(face, 'bbox'):
+            x1, y1, x2, y2 = map(int, face.bbox)
+            face_image = frame[y1:y2, x1:x2]
+            
+            landmarks = getattr(face, 'kps', None)
+            if landmarks is not None:
+                landmarks = np.array(landmarks)
+            
+            quality_metrics = analyze_face_quality(face_image, landmarks)
+            
+            info = f"Face Quality Analysis:\n"
+            for metric, score in quality_metrics.items():
+                info += f"{metric.title()}: {score:.3f}\n"
+            
+            return quality_metrics, info
+        
+        return {}, "No valid face detected"
+        
+    except Exception as e:
+        gr.Error(f"Face quality analysis failed: {str(e)}")
+        return {}, f"Error: {str(e)}"
+
+def get_system_info():
+    """Get system information for optimization."""
+    try:
+        import torch
+        import psutil
+        
+        info = f"System Information:\n"
+        info += f"CPU cores: {psutil.cpu_count()}\n"
+        info += f"RAM: {psutil.virtual_memory().total / (1024**3):.1f} GB\n"
+        
+        if torch.cuda.is_available():
+            info += f"CUDA available: Yes\n"
+            info += f"GPU count: {torch.cuda.device_count()}\n"
+            info += f"GPU: {torch.cuda.get_device_name(0)}\n"
+            info += f"VRAM: {torch.cuda.get_device_properties(0).total_memory / (1024**3):.1f} GB\n"
+        else:
+            info += f"CUDA available: No\n"
+        
+        return info
+    except Exception as e:
+        return f"Could not get system info: {str(e)}"
+
+def get_temporal_info():
+    """Get temporal processing information."""
+    try:
+        from roop.temporal_consistency import get_temporal_info
+        info_dict = get_temporal_info()
+        
+        info = "Temporal Processing Info:\n"
+        info += f"Frames processed: {info_dict.get('total_frames_processed', 0)}\n"
+        info += f"Active face tracks: {info_dict.get('active_face_tracks', 0)}\n"
+        info += f"Avg faces/frame: {info_dict.get('average_faces_per_frame', 0):.1f}\n"
+        info += f"Avg quality: {info_dict.get('average_quality', 0):.3f}\n"
+        
+        return info
+    except Exception as e:
+        return f"Could not get temporal info: {str(e)}"
 
 def apply_settings(themes, input_server_name, input_server_port):
     roop.globals.CFG.selected_theme = themes
