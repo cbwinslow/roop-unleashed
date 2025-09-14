@@ -1,0 +1,177 @@
+# ROCm Dockerfile for AMD GPU support
+FROM rocm/pytorch:rocm5.7_ubuntu22.04_py3.10_pytorch_2.0.1
+
+# Prevent interactive prompts during build
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set ROCm environment variables
+ENV ROCM_VERSION=5.7
+ENV HSA_OVERRIDE_GFX_VERSION=10.3.0
+ENV HIP_VISIBLE_DEVICES=all
+ENV PYTORCH_ROCM_ARCH_LIST="gfx803;gfx900;gfx906;gfx908;gfx90a;gfx1030;gfx1100"
+
+# Install additional system dependencies
+RUN apt-get update && apt-get install -y \
+    python3.11 \
+    python3.11-dev \
+    python3.11-distutils \
+    python3-pip \
+    ffmpeg \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    wget \
+    curl \
+    rocm-dev \
+    hip-dev \
+    rocblas-dev \
+    rocfft-dev \
+    rocsparse-dev \
+    rocrand-dev \
+    hipcub-dev \
+    hipsparse-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create symlinks for python
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python3 && \
+    ln -sf /usr/bin/python3.11 /usr/bin/python
+
+# Upgrade pip
+RUN python3 -m pip install --upgrade pip wheel setuptools
+
+# Create app directory
+WORKDIR /app
+
+# Create non-root user for security
+RUN groupadd -r roop && useradd -r -g roop roop
+
+# Copy requirements first for better caching
+COPY requirements*.txt ./
+
+# Install ROCm-optimized PyTorch and dependencies
+RUN pip install --no-cache-dir \
+    torch==2.4.0+rocm5.7 torchvision==0.19.0+rocm5.7 torchaudio==2.4.0+rocm5.7 \
+    --index-url https://download.pytorch.org/whl/rocm5.7 && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir \
+    onnxruntime-rocm==1.16.0 \
+    transformers==4.42.0 \
+    accelerate==0.32.0
+
+# Copy application code
+COPY . .
+
+# Create necessary directories with proper permissions
+RUN mkdir -p /app/models /app/temp /app/logs /app/output /app/rag_vectors /app/knowledge && \
+    chown -R roop:roop /app
+
+# Create model download script
+RUN cat > /app/download_models.py << 'EOF'
+#!/usr/bin/env python3
+import os
+import urllib.request
+import hashlib
+
+models = {
+    "inswapper_128.onnx": {
+        "url": "https://github.com/facefusion/facefusion-assets/releases/download/models/inswapper_128.onnx",
+        "hash": "e4a3f08c753cb72d04e10aa0f7dbe3deebbf39567d4ead6dce08e98aa49e16af"
+    }
+}
+
+def download_model(name, info):
+    model_path = f"/app/models/{name}"
+    if os.path.exists(model_path):
+        print(f"Model {name} already exists")
+        return
+    
+    print(f"Downloading {name}...")
+    urllib.request.urlretrieve(info["url"], model_path)
+    
+    # Verify hash if provided
+    if "hash" in info:
+        with open(model_path, "rb") as f:
+            file_hash = hashlib.sha256(f.read()).hexdigest()
+        if file_hash != info["hash"]:
+            os.remove(model_path)
+            raise ValueError(f"Hash mismatch for {name}")
+    
+    print(f"Downloaded {name} successfully")
+
+if __name__ == "__main__":
+    os.makedirs("/app/models", exist_ok=True)
+    for name, info in models.items():
+        try:
+            download_model(name, info)
+        except Exception as e:
+            print(f"Failed to download {name}: {e}")
+EOF
+
+# Make script executable
+RUN chmod +x /app/download_models.py
+
+# Create entrypoint script for ROCm
+RUN cat > /app/entrypoint-rocm.sh << 'EOF'
+#!/bin/bash
+set -e
+
+# Download models if they don't exist
+python3 /app/download_models.py
+
+# Set up ROCm environment
+export ROCM_VERSION=5.7
+export HSA_OVERRIDE_GFX_VERSION=${HSA_OVERRIDE_GFX_VERSION:-10.3.0}
+export HIP_VISIBLE_DEVICES=${HIP_VISIBLE_DEVICES:-all}
+export ROOP_EXECUTION_PROVIDER=rocm
+export ROOP_EXECUTION_THREADS=${ROOP_EXECUTION_THREADS:-4}
+
+# ROCm optimization settings
+export PYTORCH_ROCM_ARCH_LIST="gfx803;gfx900;gfx906;gfx908;gfx90a;gfx1030;gfx1100"
+export HSA_FORCE_FINE_GRAIN_PCIE=1
+export HCC_AMDGPU_TARGET=${HCC_AMDGPU_TARGET:-gfx906}
+
+# Application settings
+export ROOP_SERVER_NAME=${ROOP_SERVER_NAME:-0.0.0.0}
+export ROOP_SERVER_PORT=${ROOP_SERVER_PORT:-7860}
+export ROOP_LOG_LEVEL=${ROOP_LOG_LEVEL:-INFO}
+
+echo "ROCm environment ready!"
+echo "ROCm version: $ROCM_VERSION"
+echo "HSA override: $HSA_OVERRIDE_GFX_VERSION"
+echo "HIP devices: $HIP_VISIBLE_DEVICES"
+
+# Test ROCm availability
+python3 -c "
+import torch
+print(f'PyTorch version: {torch.__version__}')
+print(f'ROCm available: {torch.cuda.is_available()}')
+if torch.cuda.is_available():
+    print(f'ROCm devices: {torch.cuda.device_count()}')
+    for i in range(torch.cuda.device_count()):
+        print(f'Device {i}: {torch.cuda.get_device_name(i)}')
+"
+
+# Exec the command
+exec "$@"
+EOF
+
+RUN chmod +x /app/entrypoint-rocm.sh
+
+# Switch to non-root user
+USER roop
+
+# Expose default port
+EXPOSE 7860
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:7860/ || exit 1
+
+# Set entrypoint
+ENTRYPOINT ["/app/entrypoint-rocm.sh"]
+
+# Default command
+CMD ["python3", "run.py", "--server-name", "0.0.0.0", "--server-port", "7860"]

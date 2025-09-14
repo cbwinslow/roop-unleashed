@@ -1,0 +1,366 @@
+# Development Dockerfile for Roop-Unleashed with debugging tools
+FROM nvidia/cuda:12.4-cudnn8-devel-ubuntu22.04 as base
+
+# Prevent interactive prompts during build
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set CUDA environment variables
+ENV CUDA_HOME=/usr/local/cuda
+ENV PATH=${CUDA_HOME}/bin:${PATH}
+ENV LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${LD_LIBRARY_PATH}
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility,video
+
+# Install system dependencies including development tools
+RUN apt-get update && apt-get install -y \
+    python3.11 \
+    python3.11-dev \
+    python3.11-distutils \
+    python3-pip \
+    ffmpeg \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    libgoogle-perftools4 \
+    libtcmalloc-minimal4 \
+    git \
+    wget \
+    curl \
+    build-essential \
+    cmake \
+    libtbb-dev \
+    libopencv-dev \
+    htop \
+    nvtop \
+    vim \
+    nano \
+    tmux \
+    screen \
+    gdb \
+    valgrind \
+    strace \
+    ltrace \
+    lsof \
+    netcat \
+    telnet \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create symlinks for python
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python3 && \
+    ln -sf /usr/bin/python3.11 /usr/bin/python
+
+# Install latest pip and wheel
+RUN python3 -m pip install --upgrade pip wheel setuptools
+
+# Install PyTorch 2.4+ with CUDA 12.4 support
+RUN pip install torch==2.4.0 torchvision==0.19.0 torchaudio==2.4.0 \
+    --index-url https://download.pytorch.org/whl/cu124
+
+# Development stage
+FROM base as development
+
+# Install development dependencies
+RUN pip install --no-cache-dir \
+    jupyter \
+    jupyterlab \
+    ipywidgets \
+    notebook \
+    tensorboard \
+    pytest \
+    pytest-cov \
+    pytest-xvfb \
+    pytest-mock \
+    black \
+    flake8 \
+    mypy \
+    isort \
+    autopep8 \
+    pylint \
+    bandit \
+    safety \
+    pre-commit \
+    line_profiler \
+    memory_profiler \
+    py-spy \
+    scalene \
+    snakeviz \
+    pycallgraph \
+    gprof2dot \
+    graphviz \
+    debugpy \
+    ipdb \
+    pdbpp
+
+# Create app directory
+WORKDIR /app
+
+# Create non-root user for development
+RUN groupadd -r roop && useradd -r -g roop -s /bin/bash roop && \
+    mkdir -p /home/roop && chown -R roop:roop /home/roop
+
+# Copy requirements first for better caching
+COPY requirements*.txt ./
+
+# Install Python dependencies with development extras
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir \
+    onnxruntime-gpu==1.18.1 \
+    tensorrt==10.0.1 \
+    pycuda==2024.1 \
+    cupy-cuda12x==13.2.0 \
+    nvidia-ml-py==12.535.133 \
+    transformers==4.42.0 \
+    accelerate==0.32.0 \
+    xformers==0.0.27 \
+    triton==2.4.0
+
+# Copy application code
+COPY . .
+
+# Create necessary directories with proper permissions
+RUN mkdir -p /app/models /app/temp /app/logs /app/output /app/rag_vectors /app/knowledge /app/notebooks /app/profiling && \
+    chown -R roop:roop /app
+
+# Create Jupyter configuration
+RUN mkdir -p /home/roop/.jupyter && \
+    cat > /home/roop/.jupyter/jupyter_notebook_config.py << 'EOF'
+c.NotebookApp.ip = '0.0.0.0'
+c.NotebookApp.port = 8888
+c.NotebookApp.open_browser = False
+c.NotebookApp.allow_root = True
+c.NotebookApp.token = ''
+c.NotebookApp.password = ''
+c.NotebookApp.notebook_dir = '/app'
+EOF
+
+# Create development utilities
+RUN cat > /app/dev_utils.py << 'EOF'
+#!/usr/bin/env python3
+"""Development utilities for roop-unleashed."""
+
+import torch
+import psutil
+import subprocess
+import time
+import json
+from typing import Dict, Any
+
+def get_system_info() -> Dict[str, Any]:
+    """Get comprehensive system information."""
+    info = {
+        "python_version": subprocess.check_output(["python", "--version"]).decode().strip(),
+        "torch_version": torch.__version__,
+        "cuda_available": torch.cuda.is_available(),
+        "cuda_version": torch.version.cuda if torch.cuda.is_available() else None,
+        "cudnn_version": torch.backends.cudnn.version() if torch.cuda.is_available() else None,
+        "gpu_count": torch.cuda.device_count() if torch.cuda.is_available() else 0,
+        "cpu_count": psutil.cpu_count(),
+        "memory_gb": psutil.virtual_memory().total / (1024**3),
+    }
+    
+    if torch.cuda.is_available():
+        for i in range(torch.cuda.device_count()):
+            gpu_info = {
+                "name": torch.cuda.get_device_name(i),
+                "memory_gb": torch.cuda.get_device_properties(i).total_memory / (1024**3),
+                "capability": torch.cuda.get_device_capability(i),
+            }
+            info[f"gpu_{i}"] = gpu_info
+    
+    return info
+
+def profile_memory():
+    """Simple memory profiling."""
+    if torch.cuda.is_available():
+        for i in range(torch.cuda.device_count()):
+            allocated = torch.cuda.memory_allocated(i) / (1024**3)
+            reserved = torch.cuda.memory_reserved(i) / (1024**3)
+            print(f"GPU {i}: {allocated:.2f}GB allocated, {reserved:.2f}GB reserved")
+    
+    memory = psutil.virtual_memory()
+    print(f"CPU Memory: {memory.percent}% used ({memory.used / (1024**3):.2f}GB / {memory.total / (1024**3):.2f}GB)")
+
+def benchmark_operations():
+    """Benchmark basic operations."""
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Benchmarking on {device}")
+    
+    # Matrix multiplication benchmark
+    size = 1000
+    a = torch.randn(size, size, device=device)
+    b = torch.randn(size, size, device=device)
+    
+    start_time = time.time()
+    for _ in range(100):
+        c = torch.matmul(a, b)
+    torch.cuda.synchronize() if torch.cuda.is_available() else None
+    end_time = time.time()
+    
+    print(f"Matrix multiplication (1000x1000, 100 iterations): {(end_time - start_time):.3f}s")
+
+if __name__ == "__main__":
+    print("=== Roop-Unleashed Development Environment ===")
+    print(json.dumps(get_system_info(), indent=2))
+    print("\n=== Memory Usage ===")
+    profile_memory()
+    print("\n=== Performance Benchmark ===")
+    benchmark_operations()
+EOF
+
+# Create profiling script
+RUN cat > /app/profile_app.py << 'EOF'
+#!/usr/bin/env python3
+"""Profiling script for roop-unleashed."""
+
+import cProfile
+import pstats
+import io
+import sys
+import os
+from line_profiler import LineProfiler
+from memory_profiler import profile
+
+def profile_function(func, *args, **kwargs):
+    """Profile a function with cProfile."""
+    pr = cProfile.Profile()
+    pr.enable()
+    result = func(*args, **kwargs)
+    pr.disable()
+    
+    s = io.StringIO()
+    ps = pstats.Stats(pr, stream=s).sort_stats('cumulative')
+    ps.print_stats()
+    
+    with open('/app/profiling/cprofile_results.txt', 'w') as f:
+        f.write(s.getvalue())
+    
+    return result
+
+def line_profile_function(func, *args, **kwargs):
+    """Profile a function with line_profiler."""
+    profiler = LineProfiler()
+    profiler.add_function(func)
+    profiler.enable()
+    result = func(*args, **kwargs)
+    profiler.disable()
+    
+    with open('/app/profiling/line_profile_results.txt', 'w') as f:
+        profiler.print_stats(stream=f)
+    
+    return result
+
+if __name__ == "__main__":
+    print("Profiling utilities loaded. Use profile_function() or line_profile_function().")
+EOF
+
+# Create debugging script
+RUN cat > /app/debug_session.py << 'EOF'
+#!/usr/bin/env python3
+"""Interactive debugging session for roop-unleashed."""
+
+import sys
+import os
+import torch
+import numpy as np
+import cv2
+from pdb import set_trace as breakpoint
+
+# Add roop modules to path
+sys.path.insert(0, '/app')
+
+try:
+    import roop.globals
+    import roop.core
+    from roop.face_util import extract_face_images
+    print("Roop modules loaded successfully.")
+except ImportError as e:
+    print(f"Error importing roop modules: {e}")
+
+def debug_face_detection():
+    """Debug face detection functionality."""
+    print("Starting face detection debug session...")
+    breakpoint()
+
+def debug_gpu_setup():
+    """Debug GPU configuration."""
+    print(f"CUDA available: {torch.cuda.is_available()}")
+    if torch.cuda.is_available():
+        print(f"CUDA devices: {torch.cuda.device_count()}")
+        for i in range(torch.cuda.device_count()):
+            print(f"Device {i}: {torch.cuda.get_device_name(i)}")
+    breakpoint()
+
+def interactive_debug():
+    """Start interactive debugging session."""
+    print("=== Roop-Unleashed Debug Session ===")
+    print("Available functions:")
+    print("- debug_face_detection()")
+    print("- debug_gpu_setup()")
+    print("- breakpoint() for manual debugging")
+    breakpoint()
+
+if __name__ == "__main__":
+    interactive_debug()
+EOF
+
+# Make scripts executable
+RUN chmod +x /app/dev_utils.py /app/profile_app.py /app/debug_session.py
+
+# Create entrypoint script for development
+RUN cat > /app/entrypoint-dev.sh << 'EOF'
+#!/bin/bash
+set -e
+
+# Start Jupyter Lab in the background if enabled
+if [ "${JUPYTER_ENABLE_LAB:-no}" = "yes" ]; then
+    echo "Starting Jupyter Lab..."
+    su - roop -c "cd /app && jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''" &
+fi
+
+# Start TensorBoard if enabled
+if [ "${TENSORBOARD_ENABLE:-no}" = "yes" ]; then
+    echo "Starting TensorBoard..."
+    su - roop -c "cd /app && tensorboard --logdir=./logs --host=0.0.0.0 --port=6006" &
+fi
+
+# Set up development environment
+export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-all}
+export ROOP_EXECUTION_PROVIDER=${ROOP_EXECUTION_PROVIDER:-cuda}
+export ROOP_LOG_LEVEL=${ROOP_LOG_LEVEL:-DEBUG}
+export PYTHONPATH=/app:$PYTHONPATH
+
+# Enable development features
+export ROOP_ENABLE_PROFILING=${ROOP_ENABLE_PROFILING:-true}
+export ROOP_DETAILED_LOGGING=${ROOP_DETAILED_LOGGING:-true}
+export ROOP_AUTO_RELOAD=${ROOP_AUTO_RELOAD:-true}
+
+# GPU optimization settings
+if [ "$ROOP_EXECUTION_PROVIDER" = "cuda" ]; then
+    export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128
+    export CUDA_LAUNCH_BLOCKING=${CUDA_LAUNCH_BLOCKING:-0}
+fi
+
+echo "Development environment ready!"
+echo "System information:"
+python3 /app/dev_utils.py
+
+# Exec the command
+exec "$@"
+EOF
+
+RUN chmod +x /app/entrypoint-dev.sh
+
+# Switch to non-root user
+USER roop
+
+# Expose ports for Jupyter and TensorBoard
+EXPOSE 7860 8888 6006
+
+# Set development entrypoint
+ENTRYPOINT ["/app/entrypoint-dev.sh"]
+
+# Default command for development
+CMD ["python3", "run.py", "--server-name", "0.0.0.0", "--server-port", "7860"]

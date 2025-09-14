@@ -1,0 +1,314 @@
+version: '3.8'
+
+services:
+  # Production service with GPU support
+  roop-unleashed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: roop-unleashed:latest
+    container_name: roop-unleashed-main
+    restart: unless-stopped
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./models:/app/models
+      - ./output:/app/output
+      - ./temp:/app/temp
+      - ./logs:/app/logs
+      - ./knowledge:/app/knowledge
+      - ./rag_vectors:/app/rag_vectors
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 2G
+          mode: 1777
+    environment:
+      # GPU Configuration
+      - CUDA_VISIBLE_DEVICES=all
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,video
+      - ROOP_EXECUTION_PROVIDER=cuda
+      - ROOP_EXECUTION_THREADS=4
+      - ROOP_MAX_MEMORY=0
+      
+      # Performance Optimization
+      - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128
+      - CUDA_LAUNCH_BLOCKING=0
+      - CUDA_CACHE_DISABLE=0
+      - OMP_NUM_THREADS=1
+      
+      # TensorRT Support
+      - ENABLE_TENSORRT=false
+      - TENSORRT_PRECISION=fp16
+      - TENSORRT_WORKSPACE_SIZE=1024
+      
+      # Application Settings
+      - ROOP_SERVER_NAME=0.0.0.0
+      - ROOP_SERVER_PORT=7860
+      - ROOP_SERVER_SHARE=false
+      - ROOP_OUTPUT_FORMAT=mp4
+      - ROOP_VIDEO_CODEC=libx264
+      - ROOP_VIDEO_QUALITY=14
+      - ROOP_MAX_THREADS=4
+      - ROOP_MEMORY_LIMIT=0
+      - ROOP_FRAME_BUFFER_SIZE=4
+      
+      # Enhanced Features
+      - ROOP_ENABLE_ENHANCED_PROCESSING=true
+      - ROOP_BLEND_METHOD=multiband
+      - ROOP_QUALITY_THRESHOLD=0.4
+      - ROOP_ADAPTIVE_DETECTION=true
+      - ROOP_TEMPORAL_CONSISTENCY=true
+      - ROOP_ADVANCED_INPAINTING=true
+      
+      # AI/LLM Configuration
+      - ROOP_AI_ENABLED=false
+      - ROOP_LOCAL_LLM_PROVIDER=ollama
+      - ROOP_LOCAL_LLM_BASE_URL=http://ollama:11434
+      - ROOP_LOCAL_LLM_MODEL=llama3.2:3b
+      - ROOP_RAG_ENABLED=false
+      
+      # Security
+      - ROOP_VALIDATE_INPUTS=true
+      - ROOP_MAX_FILE_SIZE=100MB
+      
+      # Logging
+      - ROOP_LOG_LEVEL=INFO
+      - ROOP_DETAILED_LOGGING=true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - roop-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Development service with additional debugging tools
+  roop-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: development
+    image: roop-unleashed:dev
+    container_name: roop-unleashed-dev
+    restart: "no"
+    ports:
+      - "7861:7860"
+      - "8888:8888"  # Jupyter notebook
+      - "6006:6006"  # TensorBoard
+    volumes:
+      - .:/app:delegated
+      - ./models:/app/models
+      - ./output:/app/output
+      - ./temp:/app/temp
+      - ./logs:/app/logs
+      - ./knowledge:/app/knowledge
+      - ./rag_vectors:/app/rag_vectors
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 4G
+          mode: 1777
+    environment:
+      - CUDA_VISIBLE_DEVICES=all
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,video
+      - ROOP_EXECUTION_PROVIDER=cuda
+      - ROOP_LOG_LEVEL=DEBUG
+      - ROOP_DETAILED_LOGGING=true
+      - ROOP_ENABLE_PROFILING=true
+      - ROOP_AUTO_RELOAD=true
+      - JUPYTER_ENABLE_LAB=yes
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - roop-network
+    profiles:
+      - dev
+
+  # CPU-only service for systems without GPU
+  roop-cpu:
+    build:
+      context: .
+      dockerfile: Dockerfile.cpu
+    image: roop-unleashed:cpu
+    container_name: roop-unleashed-cpu
+    restart: unless-stopped
+    ports:
+      - "7862:7860"
+    volumes:
+      - ./models:/app/models
+      - ./output:/app/output
+      - ./temp:/app/temp
+      - ./logs:/app/logs
+      - ./knowledge:/app/knowledge
+      - ./rag_vectors:/app/rag_vectors
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 2G
+          mode: 1777
+    environment:
+      - ROOP_EXECUTION_PROVIDER=cpu
+      - ROOP_FORCE_CPU=true
+      - ROOP_EXECUTION_THREADS=8
+      - ROOP_MAX_THREADS=8
+      - ROOP_SERVER_NAME=0.0.0.0
+      - ROOP_SERVER_PORT=7860
+      - ROOP_LOG_LEVEL=INFO
+    networks:
+      - roop-network
+    profiles:
+      - cpu
+
+  # ROCm service for AMD GPUs
+  roop-rocm:
+    build:
+      context: .
+      dockerfile: Dockerfile.rocm
+    image: roop-unleashed:rocm
+    container_name: roop-unleashed-rocm
+    restart: unless-stopped
+    ports:
+      - "7863:7860"
+    volumes:
+      - ./models:/app/models
+      - ./output:/app/output
+      - ./temp:/app/temp
+      - ./logs:/app/logs
+      - ./knowledge:/app/knowledge
+      - ./rag_vectors:/app/rag_vectors
+      - /dev/dri:/dev/dri
+      - /dev/kfd:/dev/kfd
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 2G
+          mode: 1777
+    environment:
+      - HSA_OVERRIDE_GFX_VERSION=10.3.0
+      - ROCM_VERSION=5.7
+      - HIP_VISIBLE_DEVICES=all
+      - ROOP_EXECUTION_PROVIDER=rocm
+      - ROOP_SERVER_NAME=0.0.0.0
+      - ROOP_SERVER_PORT=7860
+      - ROOP_LOG_LEVEL=INFO
+    devices:
+      - /dev/dri
+      - /dev/kfd
+    group_add:
+      - video
+      - render
+    networks:
+      - roop-network
+    profiles:
+      - rocm
+
+  # Optional Ollama service for local LLM support
+  ollama:
+    image: ollama/ollama:latest
+    container_name: roop-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_PORT=11434
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - roop-network
+    profiles:
+      - ai
+
+  # Redis for caching and session management
+  redis:
+    image: redis:7-alpine
+    container_name: roop-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    networks:
+      - roop-network
+    profiles:
+      - cache
+
+  # Monitoring with Prometheus (optional)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: roop-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks:
+      - roop-network
+    profiles:
+      - monitoring
+
+  # Grafana for visualization (optional)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: roop-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - roop-network
+    profiles:
+      - monitoring
+
+volumes:
+  ollama_data:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  roop-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

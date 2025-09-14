@@ -1,0 +1,203 @@
+{
+  "metadata": {
+    "title": "Advanced Face Swap with Enhancement",
+    "description": "Complete face swap pipeline with quality analysis, enhancement, and temporal consistency",
+    "version": "1.0",
+    "author": "roop-unleashed",
+    "created": "2024-12-19",
+    "tags": ["face-swap", "enhancement", "quality-analysis"]
+  },
+  "nodes": {
+    "load_source": {
+      "id": "load_source",
+      "class_type": "LoadImage",
+      "inputs": {
+        "image": "examples/source_face.jpg"
+      },
+      "outputs": ["IMAGE", "image_info"],
+      "meta": {
+        "title": "Load Source Face",
+        "description": "Load the source face image for swapping"
+      }
+    },
+    "load_target": {
+      "id": "load_target", 
+      "class_type": "LoadImage",
+      "inputs": {
+        "image": "examples/target_image.jpg"
+      },
+      "outputs": ["IMAGE", "image_info"],
+      "meta": {
+        "title": "Load Target Image",
+        "description": "Load the target image to receive the face swap"
+      }
+    },
+    "analyze_source_quality": {
+      "id": "analyze_source_quality",
+      "class_type": "FaceQualityAnalyzer", 
+      "inputs": {
+        "image": ["load_source", "IMAGE"],
+        "metrics": ["sharpness", "lighting", "pose", "resolution"],
+        "threshold": 0.6
+      },
+      "outputs": ["quality_score", "metrics", "recommendations"],
+      "meta": {
+        "title": "Analyze Source Quality",
+        "description": "Evaluate source face quality for optimal swapping"
+      }
+    },
+    "analyze_target_quality": {
+      "id": "analyze_target_quality",
+      "class_type": "FaceQualityAnalyzer",
+      "inputs": {
+        "image": ["load_target", "IMAGE"],
+        "metrics": ["sharpness", "lighting", "pose", "resolution"], 
+        "threshold": 0.4
+      },
+      "outputs": ["quality_score", "metrics", "recommendations"],
+      "meta": {
+        "title": "Analyze Target Quality",
+        "description": "Evaluate target image quality"
+      }
+    },
+    "enhance_source": {
+      "id": "enhance_source",
+      "class_type": "EnhanceFace",
+      "inputs": {
+        "image": ["load_source", "IMAGE"],
+        "enhancer": "gfpgan",
+        "scale": 2,
+        "only_if_needed": true,
+        "quality_threshold": ["analyze_source_quality", "quality_score"]
+      },
+      "outputs": ["IMAGE", "enhancement_info"],
+      "meta": {
+        "title": "Enhance Source Face", 
+        "description": "Enhance source face if quality is below threshold"
+      }
+    },
+    "face_swap": {
+      "id": "face_swap",
+      "class_type": "FaceSwap",
+      "inputs": {
+        "source_image": ["enhance_source", "IMAGE"],
+        "target_image": ["load_target", "IMAGE"],
+        "blend_ratio": 0.65,
+        "distance_threshold": 0.65,
+        "face_index": 0,
+        "blend_method": "multiband",
+        "preserve_identity": 0.8
+      },
+      "outputs": ["IMAGE", "swap_info", "confidence"],
+      "meta": {
+        "title": "Perform Face Swap",
+        "description": "Execute face swap with advanced blending"
+      }
+    },
+    "temporal_stabilize": {
+      "id": "temporal_stabilize", 
+      "class_type": "TemporalStabilizer",
+      "inputs": {
+        "image": ["face_swap", "IMAGE"],
+        "previous_frames": [],
+        "stabilization_strength": 0.3,
+        "smoothing_factor": 0.7
+      },
+      "outputs": ["IMAGE", "stability_info"],
+      "meta": {
+        "title": "Temporal Stabilization",
+        "description": "Stabilize face position for video consistency"
+      }
+    },
+    "inpaint_boundaries": {
+      "id": "inpaint_boundaries",
+      "class_type": "InpaintFaceBoundaries", 
+      "inputs": {
+        "image": ["temporal_stabilize", "IMAGE"],
+        "mask_expansion": 5,
+        "method": "traditional_telea",
+        "feather_edges": true
+      },
+      "outputs": ["IMAGE", "mask", "inpaint_info"],
+      "meta": {
+        "title": "Inpaint Face Boundaries",
+        "description": "Clean up face swap boundaries with inpainting"
+      }
+    },
+    "final_enhancement": {
+      "id": "final_enhancement",
+      "class_type": "EnhanceFace",
+      "inputs": {
+        "image": ["inpaint_boundaries", "IMAGE"],
+        "enhancer": "codeformer",
+        "scale": 1,
+        "fidelity": 0.8,
+        "background_enhance": false
+      },
+      "outputs": ["IMAGE", "enhancement_info"],
+      "meta": {
+        "title": "Final Enhancement",
+        "description": "Apply final enhancement to the result"
+      }
+    },
+    "save_result": {
+      "id": "save_result",
+      "class_type": "SaveImage",
+      "inputs": {
+        "image": ["final_enhancement", "IMAGE"],
+        "filename": "output/enhanced_face_swap.jpg",
+        "quality": 95,
+        "add_metadata": true,
+        "metadata": {
+          "workflow": "advanced_face_swap",
+          "source_quality": ["analyze_source_quality", "quality_score"],
+          "target_quality": ["analyze_target_quality", "quality_score"],
+          "swap_confidence": ["face_swap", "confidence"]
+        }
+      },
+      "outputs": ["saved_path", "file_info"],
+      "meta": {
+        "title": "Save Enhanced Result",
+        "description": "Save the final enhanced face swap result"
+      }
+    }
+  },
+  "execution_order": [
+    "load_source",
+    "load_target", 
+    "analyze_source_quality",
+    "analyze_target_quality",
+    "enhance_source",
+    "face_swap",
+    "temporal_stabilize",
+    "inpaint_boundaries", 
+    "final_enhancement",
+    "save_result"
+  ],
+  "settings": {
+    "gpu_optimization": {
+      "enable_tensorrt": false,
+      "memory_fraction": 0.8,
+      "allow_growth": true
+    },
+    "processing": {
+      "batch_size": 1,
+      "thread_count": 4,
+      "use_half_precision": false
+    },
+    "quality_control": {
+      "min_face_size": 64,
+      "max_faces": 1,
+      "confidence_threshold": 0.5
+    }
+  },
+  "compatibility": {
+    "roop_unleashed_version": ">=2.7.0",
+    "comfyui_format": "1.0",
+    "required_models": [
+      "inswapper_128.onnx",
+      "gfpgan", 
+      "codeformer"
+    ]
+  }
+}
