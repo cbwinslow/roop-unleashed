@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  # Main production service with GPU support
+  roop-unleashed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: roop-unleashed:latest
+    container_name: roop-unleashed-main
+    restart: unless-stopped
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./models:/app/models
+      - ./output:/app/output
+      - ./temp:/app/temp
+      - ./logs:/app/logs
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 2G
+          mode: 1777
+    environment:
+      # GPU Configuration
+      - CUDA_VISIBLE_DEVICES=all
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,video
+      - ROOP_EXECUTION_PROVIDER=cuda
+      - ROOP_EXECUTION_THREADS=4
+      - ROOP_MAX_MEMORY=0
+      
+      # Application Settings
+      - ROOP_SERVER_NAME=0.0.0.0
+      - ROOP_SERVER_PORT=7860
+      - ROOP_SERVER_SHARE=false
+      - ROOP_OUTPUT_FORMAT=mp4
+      - ROOP_VIDEO_CODEC=libx264
+      - ROOP_VIDEO_QUALITY=14
+      - ROOP_MAX_THREADS=4
+      - ROOP_MEMORY_LIMIT=0
+      - ROOP_FRAME_BUFFER_SIZE=4
+      
+      # Security
+      - ROOP_VALIDATE_INPUTS=true
+      - ROOP_MAX_FILE_SIZE=100MB
+      
+      # Logging
+      - ROOP_LOG_LEVEL=INFO
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - roop-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # CPU-only service
+  roop-cpu:
+    build:
+      context: .
+      dockerfile: Dockerfile.cpu
+    image: roop-unleashed:cpu
+    container_name: roop-unleashed-cpu
+    restart: unless-stopped
+    ports:
+      - "7862:7860"
+    volumes:
+      - ./models:/app/models
+      - ./output:/app/output
+      - ./temp:/app/temp
+      - ./logs:/app/logs
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 2G
+          mode: 1777
+    environment:
+      - ROOP_EXECUTION_PROVIDER=cpu
+      - ROOP_FORCE_CPU=true
+      - ROOP_EXECUTION_THREADS=8
+      - ROOP_MAX_THREADS=8
+      - ROOP_SERVER_NAME=0.0.0.0
+      - ROOP_SERVER_PORT=7860
+      - ROOP_LOG_LEVEL=INFO
+      - ROOP_FRAME_BUFFER_SIZE=2
+    networks:
+      - roop-network
+    profiles:
+      - cpu
+
+networks:
+  roop-network:
+    driver: bridge

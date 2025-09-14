@@ -1,8 +1,4 @@
---extra-index-url https://download.pytorch.org/whl/cu124
---extra-index-url https://download.pytorch.org/whl/cu121
---extra-index-url https://download.pytorch.org/whl/cu118
-
-# Core dependencies with latest versions
+# Core dependencies with reduced complexity
 numpy>=1.24.0
 gradio>=4.36.0
 opencv-python>=4.9.0
@@ -11,25 +7,18 @@ insightface>=0.7.3
 psutil>=5.9.0
 pillow>=10.0.0
 
-# PyTorch with CUDA 12.4 support (installed separately in Docker)
-# torch>=2.4.0
-# torchvision>=0.19.0
-# torchaudio>=2.4.0
-
 # ONNX Runtime (version depends on platform)
 onnxruntime>=1.18.0; sys_platform == 'darwin' and platform_machine != 'arm64'
 onnxruntime-silicon>=1.16.0; sys_platform == 'darwin' and platform_machine == 'arm64'
 onnxruntime-gpu>=1.18.0; sys_platform != 'darwin'
 
 # Core ML and AI libraries
-tensorflow>=2.16.0
 protobuf>=4.25.0
 tqdm>=4.66.0
 ftfy>=6.1.0
 regex>=2023.0.0
 
-# Face enhancement libraries
-codeformer-pip==0.0.4
+# Face enhancement libraries (optional, lighter versions)
 gfpgan>=1.3.8
 realesrgan>=0.3.0
 
@@ -39,32 +28,8 @@ scipy>=1.11.0
 imageio>=2.31.0
 imageio-ffmpeg>=0.4.9
 
-# ComfyUI-inspired features
-xformers>=0.0.27; sys_platform != 'darwin'
-diffusers>=0.29.0
-transformers>=4.42.0
-accelerate>=0.32.0
-safetensors>=0.4.0
+# Basic HTTP client
+requests>=2.31.0
 
-# Monitoring and performance
-prometheus-client>=0.17.0
-nvidia-ml-py>=12.535.0
-gpustat>=1.1.0
-
-# Web and API enhancements
-fastapi>=0.111.0
-uvicorn>=0.30.0
-websockets>=11.0.0
-aiofiles>=23.2.0
-
-# Development and debugging (optional)
-line-profiler>=4.1.0; extra == 'dev'
-memory-profiler>=0.61.0; extra == 'dev'
-py-spy>=0.3.14; extra == 'dev'
-
-# Enhanced AI Features (optional)
-# Uncomment to enable advanced AI capabilities
-# requests>=2.31.0
-# sentence-transformers>=2.2.0
-# faiss-cpu>=1.7.4
-# pycuda>=2022.1
+# Basic monitoring
+nvidia-ml-py>=12.535.0; sys_platform == 'linux'

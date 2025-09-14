@@ -1,0 +1,29 @@
+# Minimal core dependencies for roop-unleashed
+# This file contains only essential packages for basic functionality
+
+# Core dependencies
+numpy>=1.24.0
+gradio>=4.36.0
+opencv-python>=4.9.0
+onnx>=1.16.0
+insightface>=0.7.3
+psutil>=5.9.0
+pillow>=10.0.0
+
+# ONNX Runtime (CPU version)
+onnxruntime>=1.18.0
+
+# Core ML libraries
+protobuf>=4.25.0
+tqdm>=4.66.0
+
+# Basic HTTP client
+requests>=2.31.0
+
+# Image processing
+scikit-image>=0.22.0
+scipy>=1.11.0
+imageio>=0.4.9
+
+# Basic monitoring
+nvidia-ml-py>=12.535.0; sys_platform == 'linux'
