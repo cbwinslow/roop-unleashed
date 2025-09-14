@@ -1,0 +1,55 @@
+{
+  "metadata": {
+    "title": "Basic Face Swap",
+    "description": "Simple face swap with minimal processing",
+    "version": "1.0",
+    "author": "roop-unleashed",
+    "created": "2024-12-19",
+    "tags": ["face-swap", "basic", "quick"]
+  },
+  "nodes": {
+    "1": {
+      "class_type": "LoadImage",
+      "inputs": {
+        "image": "examples/source.jpg"
+      },
+      "outputs": ["IMAGE", "image_info"]
+    },
+    "2": {
+      "class_type": "LoadImage",
+      "inputs": {
+        "image": "examples/target.jpg"
+      },
+      "outputs": ["IMAGE", "image_info"]
+    },
+    "3": {
+      "class_type": "FaceSwap",
+      "inputs": {
+        "source_image": ["1", "IMAGE"],
+        "target_image": ["2", "IMAGE"],
+        "blend_ratio": 0.65,
+        "distance_threshold": 0.65
+      },
+      "outputs": ["IMAGE", "swap_info"]
+    },
+    "4": {
+      "class_type": "SaveImage",
+      "inputs": {
+        "image": ["3", "IMAGE"],
+        "filename": "output/basic_face_swap.jpg",
+        "quality": 90
+      },
+      "outputs": ["saved_path", "status"]
+    }
+  },
+  "settings": {
+    "processing": {
+      "batch_size": 1,
+      "thread_count": 2
+    }
+  },
+  "compatibility": {
+    "roop_unleashed_version": ">=2.7.0",
+    "comfyui_format": "1.0"
+  }
+}
