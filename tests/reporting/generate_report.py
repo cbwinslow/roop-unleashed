@@ -56,7 +56,7 @@ class TestReportGenerator:
     
     def _generate_mock_test_results(self, category):
         """Generate mock test results for demonstration."""
-        import random
+        
         
         # Simulate different success rates for different test categories
         success_rates = {
