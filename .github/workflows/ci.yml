@@ -1,33 +1,345 @@
-name: ci
+name: Comprehensive CI/CD Pipeline
 
-on: [ push, pull_request ]
+on: 
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM for performance monitoring
+
+env:
+  PYTHON_VERSION: '3.10'
+  TORCH_VERSION: '2.1.0'
 
 jobs:
- lint:
-  runs-on: ubuntu-latest
-  steps:
-  - name: Checkout
-    uses: actions/checkout@v2
-  - name: Set up Python 3.9
-    uses: actions/setup-python@v2
-    with:
-     python-version: 3.9
-  - run: pip install flake8
-  - run: pip install mypy
-  - run: flake8 run.py roop
-  - run: mypy run.py roop
- test:
-  runs-on: ubuntu-latest
-  steps:
-  - name: Checkout
-    uses: actions/checkout@v2
-  - name: Set up ffmpeg
-    uses: FedericoCarboni/setup-ffmpeg@v2
-  - name: Set up Python 3.9
-    uses: actions/setup-python@v2
-    with:
-     python-version: 3.9
-  - run: pip install -r requirements-ci.txt
-  - run: python run.py -s=.github/examples/source.jpg -t=.github/examples/target.mp4 -o=.github/examples/output.mp4
-  - run: ffmpeg -i .github/examples/snapshot.mp4 -i .github/examples/output.mp4 -filter_complex psnr -f null -
+  lint:
+    name: Code Quality & Linting
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-lint-${{ hashFiles('requirements*.txt') }}
+    - name: Install linting dependencies
+      run: |
+        pip install flake8 mypy black isort pytest-cov
+        pip install -r requirements-ci.txt
+    - name: Run black formatter check
+      run: black --check --line-length 120 .
+    - name: Run isort import sorting check
+      run: isort --check-only --profile black .
+    - name: Run flake8 linting
+      run: flake8 run.py roop agents tests --max-line-length=120 --extend-ignore=E203,W503
+    - name: Run mypy type checking
+      run: mypy run.py roop agents --ignore-missing-imports
+    - name: Upload lint results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: lint-results
+        path: |
+          .flake8.log
+          mypy.log
+
+  security:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install security tools
+      run: |
+        pip install safety bandit semgrep
+    - name: Run safety check
+      run: safety check -r requirements.txt
+    - name: Run bandit security linter
+      run: bandit -r roop agents -f json -o bandit-report.json
+    - name: Upload security scan results
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-results
+        path: bandit-report.json
+
+  unit-tests:
+    name: Unit & Integration Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('requirements*.txt') }}
+    - name: Install dependencies
+      run: |
+        pip install pytest pytest-cov pytest-xdist pytest-benchmark
+        pip install -r requirements-ci.txt
+    - name: Run unit tests with coverage
+      run: |
+        pytest tests/ -v --cov=roop --cov=agents --cov-report=xml --cov-report=html \
+               --junitxml=test-results.xml --benchmark-skip
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results-${{ matrix.python-version }}
+        path: |
+          test-results.xml
+          htmlcov/
+          .coverage
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+
+  performance-tests:
+    name: Performance & Benchmark Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Set up ffmpeg
+      uses: FedericoCarboni/setup-ffmpeg@v2
+    - name: Install dependencies
+      run: |
+        pip install pytest pytest-benchmark memory-profiler psutil
+        pip install -r requirements-ci.txt
+    - name: Run performance benchmarks
+      run: |
+        pytest tests/benchmarks/ -v --benchmark-only --benchmark-json=benchmark-results.json
+    - name: Run memory profiling tests
+      run: |
+        python tests/profiling/memory_test.py
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v3
+      with:
+        name: benchmark-results
+        path: |
+          benchmark-results.json
+          memory-profile.txt
+
+  face-processing-tests:
+    name: Face Processing Quality Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Set up ffmpeg
+      uses: FedericoCarboni/setup-ffmpeg@v2
+    - name: Install dependencies
+      run: |
+        pip install -r requirements-ci.txt
+        pip install scikit-image lpips
+    - name: Download test assets
+      run: |
+        mkdir -p test-assets
+        # Create test images for processing
+        python tests/utils/generate_test_assets.py
+    - name: Run face processing tests
+      run: |
+        python tests/face_processing/test_accuracy.py
+        python tests/face_processing/test_quality_metrics.py
+    - name: Validate processing quality
+      run: |
+        python tests/validation/validate_outputs.py
+    - name: Upload processing results
+      uses: actions/upload-artifact@v3
+      with:
+        name: face-processing-results
+        path: |
+          test-outputs/
+          quality-metrics.json
+
+  integration-tests:
+    name: System Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Set up ffmpeg
+      uses: FedericoCarboni/setup-ffmpeg@v2
+    - name: Install dependencies
+      run: |
+        pip install -r requirements-ci.txt
+    - name: Test basic face swap functionality
+      run: |
+        python run.py -s=.github/examples/source.jpg -t=.github/examples/target.mp4 -o=.github/examples/output.mp4
+    - name: Validate output quality
+      run: |
+        ffmpeg -i .github/examples/snapshot.mp4 -i .github/examples/output.mp4 -filter_complex psnr -f null -
+    - name: Test agent system integration
+      run: |
+        python tests/integration/test_agent_system.py
+    - name: Test UI functionality
+      run: |
+        python tests/integration/test_ui_components.py
+
+  ai-agent-tests:
+    name: AI Agent System Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install AI dependencies
+      run: |
+        pip install -r requirements-ai.txt
+        pip install pytest-asyncio
+    - name: Test agent communication
+      run: |
+        pytest tests/agents/ -v --asyncio-mode=auto
+    - name: Test MCP server functionality
+      run: |
+        python tests/agents/test_mcp_server.py
+    - name: Test autonomous optimization
+      run: |
+        python tests/agents/test_autonomous_optimization.py
+
+  hardware-compatibility:
+    name: Hardware Compatibility Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            gpu-test: true
+          - os: windows-latest  
+            gpu-test: true
+          - os: macos-latest
+            gpu-test: false
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install platform dependencies
+      run: |
+        pip install -r requirements-ci.txt
+    - name: Test CPU processing
+      run: |
+        python tests/hardware/test_cpu_processing.py
+    - name: Test GPU availability
+      if: matrix.gpu-test
+      run: |
+        python tests/hardware/test_gpu_detection.py
+    - name: Test memory limits
+      run: |
+        python tests/hardware/test_memory_limits.py
+
+  monitoring-tests:
+    name: Monitoring & Telemetry Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install monitoring dependencies
+      run: |
+        pip install prometheus-client grafana-api influxdb-client
+        pip install -r requirements-ci.txt
+    - name: Test metrics collection
+      run: |
+        python tests/monitoring/test_metrics_collection.py
+    - name: Test telemetry systems
+      run: |
+        python tests/monitoring/test_telemetry.py
+    - name: Test alerting mechanisms
+      run: |
+        python tests/monitoring/test_alerting.py
+
+  deployment-validation:
+    name: Deployment Validation
+    runs-on: ubuntu-latest
+    needs: [lint, unit-tests, performance-tests, integration-tests]
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    - name: Test production configuration
+      run: |
+        python tests/deployment/test_production_config.py
+    - name: Validate model availability
+      run: |
+        python tests/deployment/test_model_availability.py
+    - name: Test installer scripts
+      run: |
+        bash tests/deployment/test_installer.sh
+
+  report-generation:
+    name: Generate Test Reports
+    runs-on: ubuntu-latest
+    needs: [lint, unit-tests, performance-tests, face-processing-tests, ai-agent-tests]
+    if: always()
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+    - name: Install report dependencies
+      run: |
+        pip install jinja2 matplotlib seaborn pandas
+    - name: Generate comprehensive test report
+      run: |
+        python tests/reporting/generate_report.py
+    - name: Upload final report
+      uses: actions/upload-artifact@v3
+      with:
+        name: comprehensive-test-report
+        path: |
+          test-report.html
+          performance-charts/
+          coverage-summary.json
 
