@@ -421,9 +421,9 @@ def process_frame_with_temporal_consistency(frame: Frame, faces: List[Face],
 
 def reset_temporal_state():
     """Reset temporal state for new video."""
-    global TEMPORAL_MANAGER
-    if TEMPORAL_MANAGER is not None:
-        TEMPORAL_MANAGER.reset()
+    manager = get_temporal_manager()
+    if manager is not None:
+        manager.reset()
 
 
 def get_temporal_info() -> Dict[str, Any]:

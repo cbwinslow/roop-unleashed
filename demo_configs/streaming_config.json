@@ -1,0 +1,83 @@
+{
+  "video": {
+    "enable_frame_interpolation": false,
+    "target_fps": null,
+    "interpolation_method": "simple",
+    "max_interpolation_factor": 4,
+    "enable_temporal_consistency": true,
+    "temporal_smoothing_factor": 0.3,
+    "enable_optical_flow": true,
+    "flow_quality": "medium",
+    "maintain_aspect_ratio": true,
+    "enable_quality_optimization": true,
+    "adaptive_quality": true
+  },
+  "face_enhancement": {
+    "primary_model": "gfpgan",
+    "fallback_model": "gfpgan",
+    "enhancement_level": 0.5,
+    "upscale_factor": 2,
+    "minimum_face_quality": 0.4,
+    "target_face_quality": 0.8,
+    "enable_preprocessing": true,
+    "enable_postprocessing": true,
+    "preserve_original_lighting": true,
+    "realesrgan_tile_size": 512,
+    "realesrgan_scale": 4,
+    "restoreformer_restoration_level": 0.8,
+    "wan_model_type": "enhancement"
+  },
+  "inpainting": {
+    "primary_method": "traditional_telea",
+    "fallback_method": "traditional_telea",
+    "enable_smart_detection": false,
+    "enable_glasses_detection": true,
+    "enable_hair_detection": true,
+    "enable_mask_detection": true,
+    "boundary_expand_ratio": 0.1,
+    "mask_feather_radius": 5,
+    "inpaint_radius": 3,
+    "enable_edge_preservation": true,
+    "context_search_radius": 20,
+    "enable_multi_pass": false,
+    "max_iterations": 3
+  },
+  "face_profile": {
+    "enable_quality_analysis": false,
+    "quality_weights": {
+      "sharpness": 0.25,
+      "lighting": 0.2,
+      "resolution": 0.2,
+      "pose": 0.25,
+      "artifacts": 0.1
+    },
+    "minimum_quality_score": 0.6,
+    "prefer_frontal_faces": true,
+    "max_pose_angle": 30.0,
+    "enable_multi_angle_profiling": true,
+    "generate_face_variations": true,
+    "max_variations": 5,
+    "enable_pose_estimation": true,
+    "pose_estimation_method": "pnp"
+  },
+  "performance": {
+    "priority": "speed",
+    "enable_memory_optimization": true,
+    "max_memory_usage_gb": 8.0,
+    "enable_garbage_collection": true,
+    "enable_gpu_acceleration": true,
+    "gpu_memory_fraction": 0.8,
+    "enable_mixed_precision": false,
+    "max_worker_threads": 4,
+    "enable_parallel_processing": true,
+    "batch_size": 1,
+    "enable_batch_optimization": false
+  },
+  "global": {
+    "enable_enhanced_features": true,
+    "enable_logging": true,
+    "log_level": "INFO",
+    "maintain_backwards_compatibility": true,
+    "enable_fallback_methods": true
+  }
+}
