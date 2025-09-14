@@ -28,6 +28,12 @@ blend_ratio = 0.5
 distance_threshold = 0.65
 default_det_size = True
 
+# Enhanced processing settings
+use_enhanced_processing = False
+blend_method = "multiband"
+quality_threshold = 0.4
+adaptive_detection = True
+
 processing = False 
 
 FACE_ENHANCER = None
