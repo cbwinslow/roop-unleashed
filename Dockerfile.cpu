@@ -59,10 +59,7 @@ RUN pip install --no-cache-dir \
     --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir \
-    onnxruntime==1.18.1 \
-    openvino==2024.2.0 \
-    intel-extension-for-pytorch==2.4.0+cpu \
-    mkl==2024.1.0
+    onnxruntime==1.18.1
 
 # Copy application code
 COPY . .
@@ -72,89 +69,13 @@ RUN mkdir -p /app/models /app/temp /app/logs /app/output /app/rag_vectors /app/k
     chown -R roop:roop /app
 
 # Create model download script
-RUN cat > /app/download_models.py << 'EOF'
-#!/usr/bin/env python3
-import os
-import urllib.request
-import hashlib
-
-models = {
-    "inswapper_128.onnx": {
-        "url": "https://github.com/facefusion/facefusion-assets/releases/download/models/inswapper_128.onnx",
-        "hash": "e4a3f08c753cb72d04e10aa0f7dbe3deebbf39567d4ead6dce08e98aa49e16af"
-    }
-}
-
-def download_model(name, info):
-    model_path = f"/app/models/{name}"
-    if os.path.exists(model_path):
-        print(f"Model {name} already exists")
-        return
-    
-    print(f"Downloading {name}...")
-    urllib.request.urlretrieve(info["url"], model_path)
-    
-    # Verify hash if provided
-    if "hash" in info:
-        with open(model_path, "rb") as f:
-            file_hash = hashlib.sha256(f.read()).hexdigest()
-        if file_hash != info["hash"]:
-            os.remove(model_path)
-            raise ValueError(f"Hash mismatch for {name}")
-    
-    print(f"Downloaded {name} successfully")
-
-if __name__ == "__main__":
-    os.makedirs("/app/models", exist_ok=True)
-    for name, info in models.items():
-        try:
-            download_model(name, info)
-        except Exception as e:
-            print(f"Failed to download {name}: {e}")
-EOF
+COPY scripts/download_models.py /app/download_models.py
 
 # Make script executable
 RUN chmod +x /app/download_models.py
 
 # Create entrypoint script for CPU
-RUN cat > /app/entrypoint-cpu.sh << 'EOF'
-#!/bin/bash
-set -e
-
-# Download models if they don't exist
-python3 /app/download_models.py
-
-# Set up CPU-optimized environment
-export ROOP_EXECUTION_PROVIDER=cpu
-export ROOP_FORCE_CPU=true
-export ROOP_EXECUTION_THREADS=${ROOP_EXECUTION_THREADS:-8}
-export ROOP_MAX_THREADS=${ROOP_MAX_THREADS:-8}
-
-# CPU optimization settings
-export OMP_NUM_THREADS=${OMP_NUM_THREADS:-4}
-export MKL_NUM_THREADS=${MKL_NUM_THREADS:-4}
-export NUMEXPR_NUM_THREADS=${NUMEXPR_NUM_THREADS:-4}
-export OPENBLAS_NUM_THREADS=${OPENBLAS_NUM_THREADS:-4}
-
-# Intel optimizations (if available)
-export KMP_BLOCKTIME=0
-export KMP_SETTINGS=1
-export KMP_AFFINITY=granularity=fine,verbose,compact,1,0
-
-# Memory optimization
-export MALLOC_CONF="background_thread:true,metadata_thp:auto,dirty_decay_ms:30000,muzzy_decay_ms:30000"
-export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4
-
-# Application settings optimized for CPU
-export ROOP_FRAME_BUFFER_SIZE=2
-export ROOP_MEMORY_LIMIT=0
-export ROOP_BATCH_SIZE=1
-
-echo "CPU-optimized environment ready!"
-
-# Exec the command
-exec "$@"
-EOF
+COPY scripts/entrypoint-cpu.sh /app/entrypoint-cpu.sh
 
 RUN chmod +x /app/entrypoint-cpu.sh
 

@@ -107,15 +107,7 @@ RUN pip install --no-cache-dir --upgrade pip wheel setuptools && \
     --index-url https://download.pytorch.org/whl/cu124 && \
     pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir \
-    onnxruntime-gpu==1.18.1 \
-    tensorrt==10.0.1 \
-    pycuda==2024.1 \
-    cupy-cuda12x==13.2.0 \
-    nvidia-ml-py==12.535.133 \
-    transformers==4.42.0 \
-    accelerate==0.32.0 \
-    xformers==0.0.27 \
-    triton==2.4.0
+    onnxruntime-gpu==1.18.1
 
 # Copy application code
 COPY . .
@@ -125,85 +117,13 @@ RUN mkdir -p /app/models /app/temp /app/logs /app/output /app/rag_vectors /app/k
     chown -R roop:roop /app
 
 # Create model download script
-RUN cat > /app/download_models.py << 'EOF'
-#!/usr/bin/env python3
-import os
-import urllib.request
-import hashlib
-
-models = {
-    "inswapper_128.onnx": {
-        "url": "https://github.com/facefusion/facefusion-assets/releases/download/models/inswapper_128.onnx",
-        "hash": "e4a3f08c753cb72d04e10aa0f7dbe3deebbf39567d4ead6dce08e98aa49e16af"
-    }
-}
-
-def download_model(name, info):
-    model_path = f"/app/models/{name}"
-    if os.path.exists(model_path):
-        print(f"Model {name} already exists")
-        return
-    
-    print(f"Downloading {name}...")
-    urllib.request.urlretrieve(info["url"], model_path)
-    
-    # Verify hash if provided
-    if "hash" in info:
-        with open(model_path, "rb") as f:
-            file_hash = hashlib.sha256(f.read()).hexdigest()
-        if file_hash != info["hash"]:
-            os.remove(model_path)
-            raise ValueError(f"Hash mismatch for {name}")
-    
-    print(f"Downloaded {name} successfully")
-
-if __name__ == "__main__":
-    os.makedirs("/app/models", exist_ok=True)
-    for name, info in models.items():
-        try:
-            download_model(name, info)
-        except Exception as e:
-            print(f"Failed to download {name}: {e}")
-EOF
+COPY scripts/download_models.py /app/download_models.py
 
 # Make scripts executable
 RUN chmod +x /app/download_models.py
 
 # Create entrypoint script
-RUN cat > /app/entrypoint.sh << 'EOF'
-#!/bin/bash
-set -e
-
-# Download models if they don't exist
-python3 /app/download_models.py
-
-# Set up environment
-export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-all}
-export ROOP_EXECUTION_PROVIDER=${ROOP_EXECUTION_PROVIDER:-cuda}
-export ROOP_EXECUTION_THREADS=${ROOP_EXECUTION_THREADS:-4}
-export ROOP_MAX_MEMORY=${ROOP_MAX_MEMORY:-0}
-
-# GPU optimization settings
-if [ "$ROOP_EXECUTION_PROVIDER" = "cuda" ]; then
-    export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128
-    export CUDA_LAUNCH_BLOCKING=0
-    export CUDA_CACHE_DISABLE=0
-fi
-
-# TensorRT optimization
-if [ "$ENABLE_TENSORRT" = "true" ]; then
-    export TENSORRT_ENABLED=1
-    export TENSORRT_PRECISION=${TENSORRT_PRECISION:-fp16}
-    export TENSORRT_WORKSPACE_SIZE=${TENSORRT_WORKSPACE_SIZE:-1024}
-fi
-
-# Memory optimization
-export MALLOC_CONF="background_thread:true,metadata_thp:auto,dirty_decay_ms:30000,muzzy_decay_ms:30000"
-export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4
-
-# Exec the command
-exec "$@"
-EOF
+COPY scripts/entrypoint.sh /app/entrypoint.sh
 
 RUN chmod +x /app/entrypoint.sh
 
