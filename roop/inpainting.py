@@ -5,12 +5,11 @@ Integrates stable diffusion and traditional inpainting techniques.
 
 import cv2
 import numpy as np
-from typing import Optional, Tuple, List, Dict, Any
+from typing import Optional, Tuple, List
 import logging
 from abc import ABC, abstractmethod
 
 from roop.typing import Frame, Face
-from roop.utilities import conditional_download, resolve_relative_path
 
 logger = logging.getLogger(__name__)
 
@@ -187,10 +186,9 @@ class StableDiffusionInpainter(BaseInpainter):
             return fallback.inpaint(image, mask, **kwargs)
         
         # Placeholder for actual SD inpainting
-        prompt = kwargs.get('prompt', "natural face, high quality")
-        guidance_scale = kwargs.get('guidance_scale', 7.5)
-        
-        # Convert to PIL format for SD pipeline
+        # In real implementation would use the loaded model:
+        # from diffusers import StableDiffusionInpaintPipeline
+        # self.pipeline = StableDiffusionInpaintPipeline.from_pretrained(...)
         # result = self.pipeline(image=image, mask_image=mask, prompt=prompt, ...)
         
         # For now, return traditional inpainting as fallback

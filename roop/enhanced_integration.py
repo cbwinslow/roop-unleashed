@@ -16,14 +16,11 @@ from roop.inpainting import (
 )
 from roop.temporal_consistency import (
     get_temporal_manager,
-    process_frame_with_temporal_consistency,
-    reset_temporal_state,
-    get_temporal_info
+    process_frame_with_temporal_consistency
 )
 from roop.advanced_face_models import (
     get_face_model_manager,
     enhance_face_with_wan,
-    analyze_face_quality,
     select_best_face
 )
 from roop.enhanced_face_detection import get_enhanced_faces

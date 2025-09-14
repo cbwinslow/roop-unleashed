@@ -1,6 +1,5 @@
 import threading
 from typing import Any
-import insightface
 
 import roop.globals
 from roop.typing import Frame, Face
@@ -9,6 +8,13 @@ import cv2
 import numpy as np
 from roop.capturer import get_video_frame
 from roop.utilities import resolve_relative_path, conditional_download
+
+# Try to import insightface, fall back to mock if not available
+try:
+    import insightface
+except ImportError:
+    print("insightface not found in face_util, using mock implementation")
+    from roop import mock_insightface as insightface
 
 FACE_ANALYSER = None
 THREAD_LOCK_ANALYSER = threading.Lock()
