@@ -1,0 +1,130 @@
+# Default Configuration for Roop Unleashed
+# This file contains the default settings that will be loaded on first launch
+
+# UI Settings
+selected_theme: "Default"
+server_name: ""
+server_port: 0
+server_share: false
+
+# Output Settings
+output_image_format: "png"
+output_video_format: "mp4"
+output_video_codec: "libx264"
+video_quality: 14
+clear_output: true
+
+# Performance Settings
+max_threads: 4
+memory_limit: 0
+frame_buffer_size: 4
+provider: "cuda"
+force_cpu: false
+
+# Live Cam Settings
+live_cam_start_active: false
+
+# AI/LLM Settings
+ai_config:
+  # Local LLM Configuration
+  local_llm:
+    enabled: false
+    provider: "ollama"  # ollama, local_api
+    base_url: "http://localhost:11434"
+    model: "llama3.2:3b"
+    timeout: 30
+    max_tokens: 1000
+    temperature: 0.7
+  
+  # RAG Configuration
+  rag:
+    enabled: false
+    embedding_model: "all-MiniLM-L6-v2"
+    vector_store_path: "./rag_vectors"
+    chunk_size: 512
+    chunk_overlap: 50
+    max_documents: 100
+  
+  # Image Generation
+  image_generation:
+    enabled: false
+    provider: "stable_diffusion"  # stable_diffusion, dalle
+    model_path: "./models/stable_diffusion"
+    default_steps: 20
+    default_guidance: 7.5
+
+# Agent Configuration
+agents:
+  # Enhanced agent settings
+  nlp_agent:
+    confidence_threshold: 0.7
+    fallback_agent: "operation"
+  
+  model_agent:
+    auto_download: true
+    cache_models: true
+    model_cache_path: "./models"
+  
+  operation_agent:
+    max_retry_attempts: 3
+    timeout_seconds: 60
+  
+  # New specialized agents
+  rag_agent:
+    enabled: false
+    knowledge_base_path: "./knowledge"
+    update_frequency: "daily"
+  
+  video_agent:
+    enabled: true
+    ffmpeg_path: "ffmpeg"
+    temp_dir: "./temp"
+    max_duration: 300  # seconds
+  
+  optimization_agent:
+    enabled: true
+    auto_optimize: false
+    profiling_enabled: false
+
+# NVIDIA Optimization Settings
+nvidia_config:
+  tensorrt:
+    enabled: false
+    precision: "fp16"  # fp32, fp16, int8
+    workspace_size: 1024  # MB
+    cache_path: "./tensorrt_cache"
+  
+  cuda:
+    memory_fraction: 0.9
+    allow_growth: true
+    streams: 2
+  
+  rapids:
+    enabled: false
+    gpu_memory_limit: "8GB"
+
+# Error Handling Configuration
+error_handling:
+  max_retries: 3
+  retry_delay: 1.0  # seconds
+  fallback_to_cpu: true
+  detailed_logging: true
+  crash_recovery: true
+  auto_save_interval: 300  # seconds
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  file_path: "./logs/roop.log"
+  max_file_size: "10MB"
+  backup_count: 5
+  console_output: true
+  detailed_errors: true
+
+# Security Settings
+security:
+  validate_inputs: true
+  sanitize_paths: true
+  max_file_size: "100MB"
+  allowed_extensions: [".jpg", ".jpeg", ".png", ".mp4", ".avi", ".mov"]
+  scan_uploads: false
