@@ -17,7 +17,12 @@ class InteractiveHelp:
             if query.lower() in {"quit", "exit"}:
                 break
 
-            response = self.manager.assist(agent.strip(), text.strip())
+            # Parse query format "agent:query" or just use default agent
+            if ':' in query:
+                agent, text = query.split(':', 1)
+                response = self.manager.assist(agent.strip(), text.strip())
+            else:
+                response = self.manager.assist("installer", query.strip())
             print(response)
 
 
