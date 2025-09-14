@@ -5,7 +5,7 @@ Provides a chat interface to interact with AI agents for face swapping assistanc
 
 import gradio as gr
 import logging
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict, Union
 import time
 
 # Import agent manager
@@ -59,7 +59,7 @@ class AIChatInterface:
             return self.agent_manager.available_agents()
         return ["general"]
     
-    def chat_response(self, message: str, agent: str, history: List[Tuple[str, str]]) -> Tuple[List[Tuple[str, str]], str]:
+    def chat_response(self, message: str, agent: str, history: List[dict]) -> Tuple[List[dict], str]:
         """Generate chat response using selected agent."""
         if not message.strip():
             return history, ""
@@ -80,8 +80,9 @@ class AIChatInterface:
         if not response:
             response = self._general_response(message)
         
-        # Add to history
-        history.append((message, response))
+        # Add to history in messages format
+        history.append({"role": "user", "content": message})
+        history.append({"role": "assistant", "content": response})
         self.conversation_history = history
         
         return history, ""
@@ -211,11 +212,15 @@ What would you like to know?"""
         export_text = "# Roop Unleashed AI Chat Export\n\n"
         export_text += f"Exported on: {time.strftime('%Y-%m-%d %H:%M:%S')}\n\n"
         
-        for i, (user_msg, ai_msg) in enumerate(self.conversation_history, 1):
-            export_text += f"## Conversation {i}\n\n"
-            export_text += f"**User:** {user_msg}\n\n"
-            export_text += f"**AI:** {ai_msg}\n\n"
-            export_text += "---\n\n"
+        for i in range(0, len(self.conversation_history), 2):
+            if i + 1 < len(self.conversation_history):
+                user_msg = self.conversation_history[i].get('content', '')
+                ai_msg = self.conversation_history[i + 1].get('content', '')
+                
+                export_text += f"## Conversation {(i // 2) + 1}\n\n"
+                export_text += f"**User:** {user_msg}\n\n"
+                export_text += f"**AI:** {ai_msg}\n\n"
+                export_text += "---\n\n"
         
         return export_text
     
@@ -255,7 +260,8 @@ def create_chat_interface(settings=None) -> gr.Interface:
                     label="AI Assistant",
                     height=400,
                     show_label=True,
-                    avatar_images=(None, "🤖")
+                    avatar_images=(None, "🤖"),
+                    type="messages"
                 )
                 
                 with gr.Row():
