@@ -6,6 +6,7 @@ Comprehensive test report generation system.
 import json
 import time
 import os
+import random
 from pathlib import Path
 from datetime import datetime
 import sys
@@ -132,66 +133,64 @@ class TestReportGenerator:
     
     def collect_performance_metrics(self):
         """Collect performance benchmarking data."""
-        import numpy as np
         
-        # Mock performance metrics
+        # Mock performance metrics without numpy
         self.report_data["performance_metrics"] = {
             "face_detection": {
-                "avg_time_ms": np.random.uniform(150, 300),
-                "p95_time_ms": np.random.uniform(300, 500),
-                "throughput_fps": np.random.uniform(5, 15),
-                "memory_usage_mb": np.random.uniform(800, 1500),
-                "gpu_utilization_percent": np.random.uniform(60, 90)
+                "avg_time_ms": random.uniform(150, 300),
+                "p95_time_ms": random.uniform(300, 500),
+                "throughput_fps": random.uniform(5, 15),
+                "memory_usage_mb": random.uniform(800, 1500),
+                "gpu_utilization_percent": random.uniform(60, 90)
             },
             "face_swapping": {
-                "avg_time_ms": np.random.uniform(400, 800),
-                "p95_time_ms": np.random.uniform(800, 1200),
-                "throughput_fps": np.random.uniform(2, 6),
-                "memory_usage_mb": np.random.uniform(1500, 3000),
-                "gpu_utilization_percent": np.random.uniform(70, 95)
+                "avg_time_ms": random.uniform(400, 800),
+                "p95_time_ms": random.uniform(800, 1200),
+                "throughput_fps": random.uniform(2, 6),
+                "memory_usage_mb": random.uniform(1500, 3000),
+                "gpu_utilization_percent": random.uniform(70, 95)
             },
             "quality_assessment": {
-                "avg_time_ms": np.random.uniform(50, 150),
-                "p95_time_ms": np.random.uniform(150, 250),
-                "ssim_calculation_ms": np.random.uniform(20, 50),
-                "psnr_calculation_ms": np.random.uniform(15, 40)
+                "avg_time_ms": random.uniform(50, 150),
+                "p95_time_ms": random.uniform(150, 250),
+                "ssim_calculation_ms": random.uniform(20, 50),
+                "psnr_calculation_ms": random.uniform(15, 40)
             },
             "system_resources": {
-                "peak_cpu_usage_percent": np.random.uniform(70, 95),
-                "peak_memory_usage_gb": np.random.uniform(4, 12),
-                "peak_gpu_memory_usage_gb": np.random.uniform(2, 6),
-                "disk_io_mb_s": np.random.uniform(50, 200)
+                "peak_cpu_usage_percent": random.uniform(70, 95),
+                "peak_memory_usage_gb": random.uniform(4, 12),
+                "peak_gpu_memory_usage_gb": random.uniform(2, 6),
+                "disk_io_mb_s": random.uniform(50, 200)
             }
         }
     
     def collect_quality_assessments(self):
         """Collect quality assessment data."""
-        import numpy as np
         
-        # Mock quality assessment results
+        # Mock quality assessment results without numpy
         self.report_data["quality_assessments"] = {
             "face_detection_accuracy": {
-                "precision": np.random.uniform(0.85, 0.95),
-                "recall": np.random.uniform(0.80, 0.92),
-                "f1_score": np.random.uniform(0.82, 0.93),
-                "false_positive_rate": np.random.uniform(0.02, 0.08)
+                "precision": random.uniform(0.85, 0.95),
+                "recall": random.uniform(0.80, 0.92),
+                "f1_score": random.uniform(0.82, 0.93),
+                "false_positive_rate": random.uniform(0.02, 0.08)
             },
             "face_swapping_quality": {
-                "avg_ssim": np.random.uniform(0.75, 0.90),
-                "avg_psnr": np.random.uniform(25, 35),
-                "identity_preservation": np.random.uniform(0.80, 0.92),
-                "blending_quality": np.random.uniform(0.78, 0.88)
+                "avg_ssim": random.uniform(0.75, 0.90),
+                "avg_psnr": random.uniform(25, 35),
+                "identity_preservation": random.uniform(0.80, 0.92),
+                "blending_quality": random.uniform(0.78, 0.88)
             },
             "temporal_consistency": {
-                "frame_to_frame_variance": np.random.uniform(0.02, 0.08),
-                "flickering_score": np.random.uniform(0.1, 0.3),
-                "motion_smoothness": np.random.uniform(0.85, 0.95)
+                "frame_to_frame_variance": random.uniform(0.02, 0.08),
+                "flickering_score": random.uniform(0.1, 0.3),
+                "motion_smoothness": random.uniform(0.85, 0.95)
             },
             "robustness": {
-                "angle_tolerance": np.random.uniform(0.75, 0.90),
-                "lighting_adaptation": np.random.uniform(0.70, 0.85),
-                "obstruction_handling": np.random.uniform(0.65, 0.80),
-                "resolution_scaling": np.random.uniform(0.80, 0.92)
+                "angle_tolerance": random.uniform(0.75, 0.90),
+                "lighting_adaptation": random.uniform(0.70, 0.85),
+                "obstruction_handling": random.uniform(0.65, 0.80),
+                "resolution_scaling": random.uniform(0.80, 0.92)
             }
         }
     

@@ -1,0 +1,3101 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roop-Unleashed Test Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; text-align: center; margin-bottom: 30px; }
+        h2 { color: #444; border-bottom: 2px solid #007acc; padding-bottom: 10px; }
+        .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .metric-card { background: #f8f9fa; padding: 20px; border-radius: 6px; border-left: 4px solid #007acc; }
+        .metric-value { font-size: 2em; font-weight: bold; color: #007acc; }
+        .metric-label { color: #666; margin-top: 5px; }
+        .chart-container { margin: 20px 0; height: 400px; }
+        .recommendations { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 6px; padding: 20px; margin: 20px 0; }
+        .recommendation { margin: 10px 0; padding: 10px; border-left: 3px solid #f39c12; background: white; }
+        .priority-high { border-left-color: #e74c3c; }
+        .priority-medium { border-left-color: #f39c12; }
+        .priority-low { border-left-color: #27ae60; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; font-weight: 600; }
+        .status-passed { color: #27ae60; font-weight: bold; }
+        .status-failed { color: #e74c3c; font-weight: bold; }
+        .status-skipped { color: #f39c12; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎭 Roop-Unleashed Comprehensive Test Report</h1>
+        
+        <div class="summary">
+            <div class="metric-card">
+                <div class="metric-value">86.4%</div>
+                <div class="metric-label">Overall Success Rate</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">405</div>
+                <div class="metric-label">Total Tests</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">78.5%</div>
+                <div class="metric-label">Code Coverage</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">419ms</div>
+                <div class="metric-label">Avg Processing Time</div>
+            </div>
+        </div>
+
+        <h2>📊 Test Results Overview</h2>
+        <div class="chart-container">
+            <canvas id="testResultsChart"></canvas>
+        </div>
+
+        <h2>⚡ Performance Metrics</h2>
+        <div class="chart-container">
+            <canvas id="performanceChart"></canvas>
+        </div>
+
+        <h2>🎯 Quality Assessment</h2>
+        <div class="chart-container">
+            <canvas id="qualityChart"></canvas>
+        </div>
+
+        <h2>📈 Code Coverage</h2>
+        <table>
+            <thead>
+                <tr><th>Module</th><th>Coverage</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>roop.core</td><td>85.2%</td><td>Good</td></tr><tr><td>roop.enhanced_face_detection</td><td>90.1%</td><td>Good</td></tr><tr><td>roop.enhanced_face_swapper</td><td>87.6%</td><td>Good</td></tr><tr><td>roop.advanced_blending</td><td>82.3%</td><td>Good</td></tr><tr><td>agents.manager</td><td>75.8%</td><td>Needs Improvement</td></tr><tr><td>agents.enhanced_agents</td><td>71.4%</td><td>Needs Improvement</td></tr><tr><td>roop.ui</td><td>68.9%</td><td>Needs Improvement</td></tr><tr><td>roop.utilities</td><td>91.2%</td><td>Good</td></tr>
+            </tbody>
+        </table>
+
+        <h2>💡 Recommendations</h2>
+        <div class="recommendations">
+            
+            <div class="recommendation priority-high">
+                <strong>Test Quality (High Priority)</strong><br>
+                Overall test success rate is 86.4%. Investigate failing tests.<br>
+                <em>Action: Review and fix failing test cases</em>
+            </div>
+            
+            <div class="recommendation priority-medium">
+                <strong>Performance (Medium Priority)</strong><br>
+                Face swapping taking 675ms on average. Consider optimization.<br>
+                <em>Action: Profile and optimize face swapping algorithm</em>
+            </div>
+            
+            <div class="recommendation priority-medium">
+                <strong>Code Coverage (Medium Priority)</strong><br>
+                Code coverage is 78.5%. Aim for >80% coverage.<br>
+                <em>Action: Add tests for uncovered code paths</em>
+            </div>
+            
+        </div>
+
+        <h2>📋 Detailed Test Results</h2>
+        <h3>Unit Tests</h3><table><thead><tr><th>Test</th><th>Status</th><th>Duration</th><th>Details</th></tr></thead><tbody>
+                <tr>
+                    <td>test_function_1</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.325s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_2</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.228s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_3</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.730s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_4</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.382s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_5</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.492s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_6</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.334s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_7</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.206s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_8</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.989s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_9</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.221s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_10</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.020s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_11</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.717s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_12</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.875s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_13</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.166s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_14</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.653s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_15</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.069s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_16</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.720s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_17</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.992s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_18</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.539s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_19</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.926s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_20</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.808s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_21</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.345s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_22</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.169s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_23</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.897s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_24</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>4.946s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_25</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.943s</td>
+                    <td>MemoryError: CUDA out of memory</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_26</td>
+                    <td class="status-skipped">SKIPPED</td>
+                    <td>N/A</td>
+                    <td>Test data not found</td>
+                </tr>
+                </tbody></table><h3>Integration Tests</h3><table><thead><tr><th>Test</th><th>Status</th><th>Duration</th><th>Details</th></tr></thead><tbody>
+                <tr>
+                    <td>test_function_1</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.667s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_2</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.677s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_3</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.186s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_4</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.289s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_5</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.423s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_6</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.282s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_7</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.969s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_8</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.677s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_9</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.565s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_10</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.356s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_11</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.883s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_12</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.303s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_13</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.343s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_14</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.173s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_15</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.739s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_16</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.594s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_17</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.601s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_18</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.506s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_19</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.754s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_20</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.709s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_21</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.347s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_22</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.768s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_23</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.949s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_24</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.423s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_25</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.228s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_26</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.994s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_27</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.783s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_28</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.656s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_29</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.808s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_30</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.221s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_31</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.953s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_32</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.449s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_33</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.929s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_34</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.130s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_35</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.600s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_36</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.414s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_37</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.579s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_38</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.034s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_39</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.399s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_40</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.205s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_41</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.533s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_42</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.032s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_43</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.508s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_44</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.292s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_45</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.913s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_46</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.079s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_47</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.148s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_48</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.016s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_49</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.602s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_50</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.266s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_51</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.733s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_52</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.393s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_53</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.972s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_54</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.738s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_55</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.350s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_56</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.897s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_57</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>4.613s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_58</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>4.538s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_59</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>4.885s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_60</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>4.139s</td>
+                    <td>MemoryError: CUDA out of memory</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_61</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>4.645s</td>
+                    <td>MemoryError: CUDA out of memory</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_62</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>2.835s</td>
+                    <td>MemoryError: CUDA out of memory</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_63</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>0.630s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                </tbody></table><h3>Performance Tests</h3><table><thead><tr><th>Test</th><th>Status</th><th>Duration</th><th>Details</th></tr></thead><tbody>
+                <tr>
+                    <td>test_function_1</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.227s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_2</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.547s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_3</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.307s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_4</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.036s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_5</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.413s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_6</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.066s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_7</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.765s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_8</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.007s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_9</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.836s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_10</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.853s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_11</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.959s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_12</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.715s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_13</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.678s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_14</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.153s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_15</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.553s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_16</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.466s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_17</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.118s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_18</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.317s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_19</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.415s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_20</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.995s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_21</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.444s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_22</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.096s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_23</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.951s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_24</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.177s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_25</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.281s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_26</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.960s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_27</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.446s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_28</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.869s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_29</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.745s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_30</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.347s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_31</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.723s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_32</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.380s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_33</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.328s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_34</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.408s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_35</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.378s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_36</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.143s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_37</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.841s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_38</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.215s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_39</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.234s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_40</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.142s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_41</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.496s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_42</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.727s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_43</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.625s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_44</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.087s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_45</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.536s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_46</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.742s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_47</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.346s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_48</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.193s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_49</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.171s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_50</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.659s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_51</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.114s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_52</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>4.580s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_53</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>4.146s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_54</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.632s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_55</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.033s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_56</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>1.736s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_57</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.170s</td>
+                    <td>MemoryError: CUDA out of memory</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_58</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>0.268s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_59</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>1.028s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_60</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>2.213s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_61</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>2.304s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_62</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>0.637s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_63</td>
+                    <td class="status-skipped">SKIPPED</td>
+                    <td>N/A</td>
+                    <td>GPU not available</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_64</td>
+                    <td class="status-skipped">SKIPPED</td>
+                    <td>N/A</td>
+                    <td>Platform not supported</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_65</td>
+                    <td class="status-skipped">SKIPPED</td>
+                    <td>N/A</td>
+                    <td>Test data not found</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_66</td>
+                    <td class="status-skipped">SKIPPED</td>
+                    <td>N/A</td>
+                    <td>Test data not found</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_67</td>
+                    <td class="status-skipped">SKIPPED</td>
+                    <td>N/A</td>
+                    <td>GPU not available</td>
+                </tr>
+                </tbody></table><h3>Face Processing Tests</h3><table><thead><tr><th>Test</th><th>Status</th><th>Duration</th><th>Details</th></tr></thead><tbody>
+                <tr>
+                    <td>test_function_1</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.328s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_2</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.679s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_3</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.425s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_4</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.875s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_5</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.273s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_6</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.953s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_7</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.773s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_8</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.486s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_9</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.497s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_10</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.931s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_11</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.038s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_12</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.808s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_13</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.009s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_14</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.378s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_15</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.396s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_16</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.238s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_17</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.367s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_18</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.863s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_19</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.991s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_20</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.793s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_21</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.179s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_22</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.571s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_23</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.917s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_24</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.552s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_25</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.620s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_26</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.864s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_27</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.279s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_28</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.209s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_29</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.951s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_30</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.759s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_31</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.588s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_32</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.655s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_33</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.042s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_34</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.693s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_35</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.390s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_36</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.736s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_37</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.175s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_38</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.289s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_39</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.156s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_40</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.754s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_41</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.283s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_42</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.271s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_43</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.429s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_44</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.441s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_45</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.131s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_46</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.289s</td>
+                    <td>TimeoutError: Processing took longer than expected</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_47</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>0.161s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_48</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>1.555s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_49</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>2.533s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_50</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>1.334s</td>
+                    <td>TimeoutError: Processing took longer than expected</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_51</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>1.660s</td>
+                    <td>MemoryError: CUDA out of memory</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_52</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>0.506s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_53</td>
+                    <td class="status-skipped">SKIPPED</td>
+                    <td>N/A</td>
+                    <td>GPU not available</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_54</td>
+                    <td class="status-skipped">SKIPPED</td>
+                    <td>N/A</td>
+                    <td>GPU not available</td>
+                </tr>
+                </tbody></table><h3>Agent Tests</h3><table><thead><tr><th>Test</th><th>Status</th><th>Duration</th><th>Details</th></tr></thead><tbody>
+                <tr>
+                    <td>test_function_1</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.261s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_2</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.352s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_3</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.916s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_4</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.682s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_5</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.410s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_6</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.886s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_7</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.627s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_8</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.850s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_9</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.968s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_10</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.368s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_11</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.300s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_12</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.118s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_13</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.567s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_14</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.412s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_15</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.330s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_16</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.762s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_17</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.487s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_18</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.424s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_19</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.417s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_20</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.213s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_21</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.265s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_22</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.714s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_23</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.437s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_24</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.519s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_25</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.151s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_26</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.392s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_27</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.296s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_28</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.728s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_29</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.391s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_30</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.414s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_31</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.849s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_32</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.458s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_33</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.546s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_34</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.149s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_35</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.795s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_36</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.956s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_37</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.861s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_38</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.725s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_39</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.751s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_40</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.480s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_41</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.380s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_42</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.788s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_43</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.539s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_44</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.511s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_45</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.278s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_46</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.920s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_47</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.919s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_48</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.365s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_49</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.939s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_50</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.254s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_51</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.105s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_52</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.269s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_53</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.657s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_54</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.417s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_55</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.405s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_56</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.273s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_57</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.191s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_58</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.021s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_59</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.823s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_60</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.877s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_61</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.791s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_62</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.193s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_63</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.477s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_64</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.536s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_65</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.910s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_66</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.722s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_67</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.420s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_68</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.008s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_69</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.459s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_70</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.518s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_71</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.054s</td>
+                    <td>TimeoutError: Processing took longer than expected</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_72</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>0.147s</td>
+                    <td>TimeoutError: Processing took longer than expected</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_73</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>0.890s</td>
+                    <td>TimeoutError: Processing took longer than expected</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_74</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.825s</td>
+                    <td>MemoryError: CUDA out of memory</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_75</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.610s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_76</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>4.829s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_77</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>1.775s</td>
+                    <td>TimeoutError: Processing took longer than expected</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_78</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>2.713s</td>
+                    <td>MemoryError: CUDA out of memory</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_79</td>
+                    <td class="status-skipped">SKIPPED</td>
+                    <td>N/A</td>
+                    <td>GPU not available</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_80</td>
+                    <td class="status-skipped">SKIPPED</td>
+                    <td>N/A</td>
+                    <td>Platform not supported</td>
+                </tr>
+                </tbody></table><h3>Hardware Tests</h3><table><thead><tr><th>Test</th><th>Status</th><th>Duration</th><th>Details</th></tr></thead><tbody>
+                <tr>
+                    <td>test_function_1</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.467s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_2</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.538s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_3</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.347s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_4</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.453s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_5</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.626s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_6</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.705s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_7</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.280s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_8</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.629s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_9</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.584s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_10</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.885s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_11</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.842s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_12</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.714s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_13</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.437s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_14</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.434s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_15</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.665s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_16</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.289s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_17</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.374s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_18</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.247s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_19</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.169s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_20</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.917s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_21</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.656s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_22</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.438s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_23</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.361s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_24</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.193s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_25</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.850s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_26</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.858s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_27</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.702s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_28</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.969s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_29</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.483s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_30</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.640s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_31</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.362s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_32</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.795s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_33</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.182s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_34</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.393s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_35</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.764s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_36</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.748s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_37</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.649s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_38</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.208s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_39</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.673s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_40</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.854s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_41</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.524s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_42</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.764s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_43</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.912s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_44</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.874s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_45</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.832s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_46</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.621s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_47</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.768s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_48</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.560s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_49</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.826s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_50</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.590s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_51</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.573s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_52</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.400s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_53</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>0.751s</td>
+                    <td>MemoryError: CUDA out of memory</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_54</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>1.986s</td>
+                    <td>MemoryError: CUDA out of memory</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_55</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>2.691s</td>
+                    <td>TimeoutError: Processing took longer than expected</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_56</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>4.679s</td>
+                    <td>TimeoutError: Processing took longer than expected</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_57</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>2.811s</td>
+                    <td>TimeoutError: Processing took longer than expected</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_58</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>0.705s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_59</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>4.330s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_60</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.721s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_61</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.635s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_62</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>1.144s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_63</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>1.453s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_64</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.592s</td>
+                    <td>MemoryError: CUDA out of memory</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_65</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>4.238s</td>
+                    <td>AssertionError: Expected quality > 0.8, got 0.75</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_66</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>2.436s</td>
+                    <td>MemoryError: CUDA out of memory</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_67</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.352s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_68</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>1.566s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_69</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.204s</td>
+                    <td>TimeoutError: Processing took longer than expected</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_70</td>
+                    <td class="status-skipped">SKIPPED</td>
+                    <td>N/A</td>
+                    <td>Test data not found</td>
+                </tr>
+                </tbody></table><h3>Monitoring Tests</h3><table><thead><tr><th>Test</th><th>Status</th><th>Duration</th><th>Details</th></tr></thead><tbody>
+                <tr>
+                    <td>test_function_1</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.227s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_2</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.505s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_3</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.746s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_4</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.543s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_5</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.200s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_6</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.461s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_7</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.623s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_8</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.715s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_9</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.206s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_10</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.413s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_11</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.981s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_12</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.610s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_13</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.733s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_14</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.111s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_15</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.801s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_16</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.033s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_17</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.792s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_18</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.499s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_19</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.756s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_20</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.989s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_21</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.470s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_22</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.606s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_23</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.400s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_24</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.617s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_25</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.112s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_26</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.830s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_27</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.112s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_28</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.433s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_29</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.239s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_30</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.884s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_31</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.464s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_32</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.439s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_33</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.604s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_34</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.766s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_35</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.160s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_36</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.366s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_37</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.837s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_38</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.862s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_39</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.752s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_40</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.669s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_41</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.209s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_42</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.359s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_43</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.179s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_44</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.711s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_45</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.192s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_46</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.435s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_47</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.975s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_48</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>0.240s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_49</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.293s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_50</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.259s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_51</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.517s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_52</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.543s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_53</td>
+                    <td class="status-passed">PASSED</td>
+                    <td>1.769s</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_54</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>2.016s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_55</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>2.145s</td>
+                    <td>ValueError: Invalid input format</td>
+                </tr>
+                
+                <tr>
+                    <td>test_function_56</td>
+                    <td class="status-failed">FAILED</td>
+                    <td>3.975s</td>
+                    <td>MemoryError: CUDA out of memory</td>
+                </tr>
+                </tbody></table>
+
+        <hr style="margin: 40px 0;">
+        <p style="text-align: center; color: #666; font-size: 0.9em;">
+            Report generated on 2025-09-14T11:23:30.676621<br>
+            Python 3.12.3 (main, Aug 14 2025, 17:47:21) [GCC 13.3.0] on linux
+        </p>
+    </div>
+
+    <script>
+        // Test Results Chart
+        const testCtx = document.getElementById('testResultsChart').getContext('2d');
+        new Chart(testCtx, {
+            type: 'bar',
+            data: {
+                labels: ["Unit Tests", "Integration Tests", "Performance Tests", "Face Processing Tests", "Agent Tests", "Hardware Tests", "Monitoring Tests"],
+                datasets: [{
+                    label: 'Passed',
+                    data: [23, 56, 51, 45, 70, 52, 53],
+                    backgroundColor: '#27ae60'
+                }, {
+                    label: 'Failed',
+                    data: [2, 7, 11, 7, 8, 17, 3],
+                    backgroundColor: '#e74c3c'
+                }, {
+                    label: 'Skipped',
+                    data: [1, 0, 5, 2, 2, 1, 0],
+                    backgroundColor: '#f39c12'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Performance Chart
+        const perfCtx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(perfCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Face Detection', 'Face Swapping', 'Quality Check', 'GPU Utilization', 'Memory Efficiency'],
+                datasets: [{
+                    label: 'Performance Score',
+                    data: [61.0, 14.8, 100, 75.9, 67.8],
+                    borderColor: '#007acc',
+                    backgroundColor: 'rgba(0, 122, 204, 0.2)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // Quality Chart
+        const qualityCtx = document.getElementById('qualityChart').getContext('2d');
+        new Chart(qualityCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['SSIM Score', 'PSNR Score', 'Identity Preservation', 'Blending Quality'],
+                datasets: [{
+                    data: [82.4, 83.0, 90.9, 81.5],
+                    backgroundColor: ['#3498db', '#2ecc71', '#f39c12', '#e74c3c']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+</body>
+</html>
+        
