@@ -117,8 +117,8 @@ class MetricsCollector:
             
         except ImportError:
             # Fallback if psutil not available
-            self._add_metric("system.cpu.usage_percent", np.random.uniform(30, 80), "system")
-            self._add_metric("system.memory.usage_percent", np.random.uniform(40, 70), "system")
+            self._add_metric("system.cpu.usage_percent", float('nan'), "system", tags={"status": "unavailable"})
+            self._add_metric("system.memory.usage_percent", float('nan'), "system", tags={"status": "unavailable"})
             
     def _collect_application_metrics(self):
         """Collect application-specific metrics."""
