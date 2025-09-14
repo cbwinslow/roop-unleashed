@@ -158,7 +158,7 @@ docker compose -f docker-compose-simple.yml --profile cpu up -d roop-cpu &>/dev/
 sleep 10
 
 # Check memory usage
-MEMORY_USAGE=$(docker stats --no-stream --format "table {{.MemUsage}}" roop-unleashed-cpu 2>/dev/null | tail -n1 | cut -d'/' -f1 | tr -d ' MiB')
+MEMORY_USAGE=$(docker stats --no-stream --format "table {{.MemUsage}}" roop-cpu 2>/dev/null | tail -n1 | cut -d'/' -f1 | tr -d ' MiB')
 if [ ! -z "$MEMORY_USAGE" ] && [ "$MEMORY_USAGE" -lt 4000 ]; then
     test_result 0 "Container memory usage is reasonable (${MEMORY_USAGE}MiB)"
 else
