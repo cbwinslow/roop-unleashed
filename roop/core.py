@@ -206,7 +206,7 @@ def log_available_gpus() -> None:
             update_status(f"CUDA devices detected: {', '.join(devices)}")
         elif getattr(torch.backends, 'mps', None) and torch.backends.mps.is_available():
             update_status('MPS device detected')
-        elif getattr(torch.version, 'hip', None) and torch.cuda.is_available():
+        elif getattr(torch.version, 'hip', None) and getattr(torch.version, 'hip', None) is not None:
             update_status('ROCm device detected')
         elif 'DmlExecutionProvider' in onnxruntime.get_available_providers():
             update_status('DirectML device detected')
@@ -415,7 +415,37 @@ def run() -> None:
     log_available_gpus()
     if not pre_check():
         return
-    roop.globals.CFG = Settings('config.yaml')
+    
+    # Initialize enhanced configuration system with defaults
+    roop.globals.CFG = Settings('config.yaml', 'config_defaults.yaml')
+    
+    # Validate configuration
+    if not roop.globals.CFG.validate():
+        logger.warning("Configuration validation failed, using defaults")
+    
+    # Initialize enhanced agent system
+    try:
+        from agents.manager import MultiAgentManager
+        roop.globals.AGENT_MANAGER = MultiAgentManager(roop.globals.CFG)
+        logger.info("Enhanced multi-agent system initialized")
+        
+        # Log system status
+        status = roop.globals.AGENT_MANAGER.get_system_status()
+        logger.info(f"System status: {status['agent_count']} agents available")
+        
+    except Exception as e:
+        logger.error(f"Failed to initialize enhanced agent system: {e}")
+        # Fallback to basic agent system
+        from agents.manager import MultiAgentManager
+        roop.globals.AGENT_MANAGER = MultiAgentManager()
+    
+    # Setup error handling
+    try:
+        from roop.error_handling import ErrorHandler
+        roop.globals.ERROR_HANDLER = ErrorHandler(roop.globals.CFG)
+    except Exception as e:
+        logger.warning(f"Could not initialize enhanced error handling: {e}")
+    
     if roop.globals.headless:
         start()
     else:

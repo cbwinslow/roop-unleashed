@@ -31,12 +31,20 @@ def run_ffmpeg(args: List[str]) -> bool:
     commands.extend(args)
     print(" ".join(commands))
     try:
+        if not shutil.which("ffmpeg"):
+            print('ffmpeg not found. Please ensure it is installed and on your PATH.')
+            return False
         subprocess.check_output(commands, stderr=subprocess.STDOUT)
         return True
     except subprocess.CalledProcessError as e:
-        print(f'ffmpeg failed: {e.output.decode(errors="ignore")}')
-    except FileNotFoundError:
-        print('ffmpeg not found. Please ensure it is installed and on your PATH.')
+        output = e.output.decode(errors="ignore")
+        max_chars = 500
+        if len(output) > max_chars:
+            print(f'ffmpeg failed (output truncated to {max_chars} chars):\n{output[:max_chars]}...\n[truncated]')
+        else:
+            print(f'ffmpeg failed:\n{output}')
+    except FileNotFoundError as e:
+        print(f'File not found: {e.filename}. This could be the input file or a missing dependency.')
     except Exception as e:
         print(f'Unexpected ffmpeg error: {e}')
     return False
@@ -45,9 +53,13 @@ def run_ffmpeg(args: List[str]) -> bool:
 def detect_fps(target_path: str) -> float:
     command = ['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=r_frame_rate', '-of', 'default=noprint_wrappers=1:nokey=1', target_path]
     try:
-        output = subprocess.check_output(command, stderr=subprocess.STDOUT).decode().strip().split('/')
-        numerator, denominator = map(int, output)
-        return numerator / denominator
+        output = subprocess.check_output(command, stderr=subprocess.STDOUT).decode().strip()
+        # Handle both fraction (e.g., "30/1") and integer (e.g., "30") outputs
+        if '/' in output:
+            numerator, denominator = map(int, output.split('/'))
+            return numerator / denominator
+        else:
+            return float(output)
     except subprocess.CalledProcessError as e:
         print(f'ffprobe failed: {e.output.decode(errors="ignore")}')
     except Exception:
@@ -68,7 +80,8 @@ def join_videos(videos: List[str], dest_filename: str):
         inputs.append('-i')
         inputs.append(v)
         filter += f'[{i}:v:0][{i}:a:0]'
-    if not run_ffmpeg([" ".join(inputs), '-filter_complex', f'"{filter}concat=n={len(videos)}:v=1:a=1[outv][outa]"', '-map', '"[outv]"', '-map', '"[outa]"', dest_filename]):
+    args = inputs + ['-filter_complex', f'{filter}concat=n={len(videos)}:v=1:a=1[outv][outa]', '-map', '[outv]', '-map', '[outa]', dest_filename]
+    if not run_ffmpeg(args):
         print('Failed to join videos')
 
 def extract_frames(target_path: str) -> None:
@@ -206,12 +219,21 @@ def get_device() -> str:
     prov = roop.globals.execution_providers[0]
     if prov == 'CUDAExecutionProvider' and torch.cuda.is_available():
         return 'cuda'
-    if prov == 'ROCMExecutionProvider' and torch.cuda.is_available():
-        return 'cuda'
+    if prov == 'ROCMExecutionProvider':
+        # Check for ROCm-specific device availability
+        try:
+            if hasattr(torch.version, 'hip') and torch.version.hip is not None:
+                return 'cuda'  # ROCm uses CUDA-compatible API
+        except AttributeError:
+            pass
+        # Fallback to CUDA check for backward compatibility
+        if torch.cuda.is_available():
+            return 'cuda'
     if prov == 'CoreMLExecutionProvider' and getattr(torch.backends, 'mps', None) and torch.backends.mps.is_available():
         return 'mps'
-    if prov == 'DmlExecutionProvider' and torch.cuda.is_available():
-        return 'cuda'
+    if prov == 'DmlExecutionProvider':
+        # DirectML is Windows-specific and doesn't rely on CUDA
+        return 'cpu'  # DirectML operations are handled by ONNX Runtime, use CPU for torch operations
     return 'cpu'
     
 
@@ -238,7 +260,7 @@ def open_with_default_app(filename):
         elif platform == 'wsl':
             subprocess.call('cmd.exe /C start'.split() + [filename])
         else:                                   # linux variants
-            subprocess.call('xdg-open', filename)
+            subprocess.call(['xdg-open', filename])
     except Exception as e:
         print(f'Failed to open {filename}: {e}')
 
