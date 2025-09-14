@@ -10,6 +10,17 @@ from roop.face_util import get_first_face, get_all_faces
 from roop.typing import Face, Frame
 from roop.utilities import conditional_download, resolve_relative_path, is_image, is_video, compute_cosine_distance, get_destfilename_from_path
 
+# Import enhanced face processing capabilities
+try:
+    from roop.enhanced_face_swapper import (
+        enhanced_process_frame, enhanced_process_frames, get_enhancement_config,
+        assess_frame_quality, get_available_blend_methods
+    )
+    ENHANCED_AVAILABLE = True
+except ImportError:
+    ENHANCED_AVAILABLE = False
+    print("Enhanced face processing not available - using standard processing")
+
 FACE_SWAPPER = None
 THREAD_LOCK = threading.Lock()
 NAME = 'ROOP.FACE-SWAPPER'
@@ -59,6 +70,22 @@ def swap_face(source_face: Face, target_face: Face, temp_frame: Frame) -> Frame:
 def process_frame(source_face: Face, target_face: Face, temp_frame: Frame) -> Frame:
     global DIST_THRESHOLD
 
+    # Check if enhanced processing is available and enabled
+    if ENHANCED_AVAILABLE and hasattr(roop.globals, 'use_enhanced_processing') and roop.globals.use_enhanced_processing:
+        # Use enhanced processing with quality assessment
+        blend_method = getattr(roop.globals, 'blend_method', 'multiband')
+        blend_ratio = getattr(roop.globals, 'blend_ratio', 0.8)
+        
+        selection_mode = "all_faces" if roop.globals.many_faces else "match_target"
+        
+        return enhanced_process_frame(
+            source_face, target_face, temp_frame,
+            face_selection_mode=selection_mode,
+            blend_method=blend_method,
+            blend_ratio=blend_ratio
+        )
+    
+    # Standard processing (existing code)
     if roop.globals.many_faces:
         many_faces = get_all_faces(temp_frame)
         if many_faces is not None:
@@ -87,6 +114,15 @@ def process_frame(source_face: Face, target_face: Face, temp_frame: Frame) -> Fr
 
 
 def process_frames(is_batch: bool, source_face: Face, target_face: Face, temp_frame_paths: List[str], update: Callable[[], None]) -> None:
+    # Check if enhanced processing is available and enabled
+    if ENHANCED_AVAILABLE and hasattr(roop.globals, 'use_enhanced_processing') and roop.globals.use_enhanced_processing:
+        blend_method = getattr(roop.globals, 'blend_method', 'multiband')
+        blend_ratio = getattr(roop.globals, 'blend_ratio', 0.8)
+        
+        enhanced_process_frames(is_batch, source_face, target_face, temp_frame_paths, update, blend_method, blend_ratio)
+        return
+    
+    # Standard processing (existing code)
     for temp_frame_path in temp_frame_paths:
         temp_frame = cv2.imread(temp_frame_path)
         if temp_frame is not None:
@@ -121,3 +157,60 @@ def process_batch_images(source_face: Any, target_face: Any, temp_frame_paths: L
     global DIST_THRESHOLD
 
     roop.processors.frame.core.process_batch(source_face, target_face, temp_frame_paths, process_frames)
+
+
+# Enhanced processing utilities
+def get_processing_info() -> dict:
+    """Get information about available processing methods."""
+    info = {
+        "enhanced_available": ENHANCED_AVAILABLE,
+        "standard_processing": True
+    }
+    
+    if ENHANCED_AVAILABLE:
+        info.update(get_enhancement_config())
+    
+    return info
+
+
+def assess_image_quality(image_path: str) -> dict:
+    """Assess the quality of an image for face swapping."""
+    if not ENHANCED_AVAILABLE:
+        return {"error": "Enhanced processing not available"}
+    
+    frame = cv2.imread(image_path)
+    if frame is None:
+        return {"error": "Could not load image"}
+    
+    return assess_frame_quality(frame)
+
+
+def get_blend_methods() -> List[str]:
+    """Get available blending methods."""
+    if ENHANCED_AVAILABLE:
+        return get_available_blend_methods()
+    return ["standard"]
+
+
+def enable_enhanced_processing(enable: bool = True) -> None:
+    """Enable or disable enhanced processing."""
+    if ENHANCED_AVAILABLE:
+        roop.globals.use_enhanced_processing = enable
+        print(f"Enhanced processing {'enabled' if enable else 'disabled'}")
+    else:
+        print("Enhanced processing not available")
+
+
+def set_blend_method(method: str) -> bool:
+    """Set the blending method for enhanced processing."""
+    if not ENHANCED_AVAILABLE:
+        return False
+    
+    available_methods = get_available_blend_methods()
+    if method in available_methods:
+        roop.globals.blend_method = method
+        print(f"Blend method set to: {method}")
+        return True
+    else:
+        print(f"Invalid blend method. Available: {available_methods}")
+        return False
